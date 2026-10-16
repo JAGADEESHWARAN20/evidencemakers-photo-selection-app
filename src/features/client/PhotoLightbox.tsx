@@ -143,22 +143,22 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label={`Photo viewer: ${asset.baseFilename}`}
-      className="fixed inset-0 z-50 flex bg-[#080808]/98 backdrop-blur-md overflow-hidden font-sans select-none"
+      className="fixed inset-0 z-50 flex bg-[#0A0A0A]/98 backdrop-blur-md overflow-hidden font-sans select-none"
     >
       {/* Main Image Stage */}
       <div className="flex-1 flex flex-col h-full relative min-w-0">
         {/* Top Control Bar */}
-        <div className="h-14 sm:h-16 border-b border-[#242424] px-3 sm:px-6 flex items-center justify-between bg-[#080808] shrink-0 gap-2">
+        <div className="h-14 sm:h-16 border-b border-[#27272A] px-3 sm:px-6 flex items-center justify-between bg-[#0A0A0A] shrink-0 gap-2">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 font-sans">
             <span className="text-xs sm:text-sm font-semibold text-white tracking-wider truncate max-w-[100px] sm:max-w-[200px]">
               {asset.baseFilename}
             </span>
             <span className="text-[#333333]">·</span>
-            <span className="text-xs text-[#8C8C8C] tabular-nums whitespace-nowrap">
+            <span className="text-xs text-[#A1A1AA] tabular-nums whitespace-nowrap">
               {currentIndex + 1}/{assets.length}
             </span>
             {asset.rawExtension && (
-              <span className="hidden sm:inline text-[10px] text-[#F5B82E] border border-[#F5B82E]/30 px-1.5 py-0.5 rounded">
+              <span className="hidden sm:inline text-[10px] text-[#D4AF37] border border-[#D4AF37]/30 px-1.5 py-0.5 rounded">
                 RAW {asset.rawExtension}
               </span>
             )}
@@ -169,10 +169,10 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
             <button
               onClick={() => onToggleSelection(asset.id)}
               disabled={isSelectionLocked}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors min-h-[36px] sm:min-h-[40px] ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors min-h-[36px] sm:min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] ${
                 asset.isSelected
-                  ? 'bg-[#F5B82E] text-black font-semibold shadow'
-                  : 'bg-[#121212] text-[#8C8C8C] hover:text-white border border-[#242424]'
+                  ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black font-semibold shadow'
+                  : 'bg-[#121212] hover:bg-[#181818] text-[#A1A1AA] hover:text-white border border-[#27272A]'
               }`}
             >
               <Check className={`w-3.5 h-3.5 ${asset.isSelected ? 'stroke-[3]' : 'opacity-40'}`} />
@@ -188,8 +188,8 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
             {asset.exif && (
               <button
                 onClick={() => setShowExif(!showExif)}
-                className={`p-2 rounded-lg transition-colors min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] flex items-center justify-center ${
-                  showExif ? 'text-[#F5B82E] bg-[#181818]' : 'text-[#8C8C8C] hover:text-white'
+                className={`p-2 rounded-lg transition-colors min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] ${
+                  showExif ? 'text-[#D4AF37] bg-[#181818]' : 'text-[#A1A1AA] hover:text-white'
                 }`}
                 title="Camera &amp; EXIF data"
                 aria-label="Camera and EXIF details"
@@ -201,8 +201,8 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
             {/* Toggle Chat Panel button */}
             <button
               onClick={() => setShowChat(!showChat)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-colors min-h-[36px] sm:min-h-[40px] ${
-                showChat ? 'text-[#F5B82E] bg-[#181818]' : 'text-[#8C8C8C] hover:text-white bg-[#121212] border border-[#242424]'
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-colors min-h-[36px] sm:min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] ${
+                showChat ? 'text-[#D4AF37] bg-[#181818]' : 'text-[#A1A1AA] hover:text-white bg-[#121212] border border-[#27272A]'
               }`}
               title="Toggle picture chat notes"
               aria-label="Toggle photo notes chat"
@@ -214,7 +214,7 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="p-2 text-[#8C8C8C] hover:text-white bg-[#121212] border border-[#242424] rounded-lg transition-colors min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] flex items-center justify-center ml-1"
+              className="p-2 text-[#A1A1AA] hover:text-white bg-[#121212] hover:bg-[#181818] border border-[#27272A] rounded-lg transition-colors min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] flex items-center justify-center ml-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
               aria-label="Close viewer"
             >
               <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -232,7 +232,7 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
           {hasPrevious && (
             <button
               onClick={goToPrevious}
-              className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/75 hover:bg-black text-white hover:text-[#F5B82E] transition-all min-w-[46px] min-h-[46px] items-center justify-center border border-white/10 hover:border-[#F5B82E]/40 shadow-xl"
+              className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/75 hover:bg-black text-white hover:text-[#D4AF37] transition-all min-w-[46px] min-h-[46px] items-center justify-center border border-white/10 hover:border-[#D4AF37]/40 shadow-xl"
               aria-label="Previous photograph"
             >
               <ChevronLeft className="w-6 h-6" />
@@ -276,7 +276,7 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
           {hasNext && (
             <button
               onClick={goToNext}
-              className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/75 hover:bg-black text-white hover:text-[#F5B82E] transition-all min-w-[46px] min-h-[46px] items-center justify-center border border-white/10 hover:border-[#F5B82E]/40 shadow-xl"
+              className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-black/75 hover:bg-black text-white hover:text-[#D4AF37] transition-all min-w-[46px] min-h-[46px] items-center justify-center border border-white/10 hover:border-[#D4AF37]/40 shadow-xl"
               aria-label="Next photograph"
             >
               <ChevronRight className="w-6 h-6" />
@@ -285,9 +285,9 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
 
           {/* Floating Mobile Touch Swipe Cue */}
           <div className="sm:hidden absolute bottom-4 z-20 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-md text-[11px] text-[#A3A3A3] border border-white/10 pointer-events-none shadow-lg">
-            <ChevronLeft className="w-3.5 h-3.5 text-[#F5B82E]" />
+            <ChevronLeft className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>Swipe photo to navigate</span>
-            <ChevronRight className="w-3.5 h-3.5 text-[#F5B82E]" />
+            <ChevronRight className="w-3.5 h-3.5 text-[#D4AF37]" />
           </div>
         </div>
 
@@ -297,7 +297,7 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
             <div className="flex items-center gap-3 sm:gap-4 whitespace-nowrap">
               <span>Body: <strong className="text-white font-normal">{asset.exif.camera || 'Canon EOS'}</strong></span>
               <span>Lens: <strong className="text-white font-normal">{asset.exif.lens}</strong></span>
-              <span>Aperture: <strong className="text-[#F5B82E] font-normal">{asset.exif.aperture}</strong></span>
+              <span>Aperture: <strong className="text-[#D4AF37] font-normal">{asset.exif.aperture}</strong></span>
               <span>Shutter: <strong className="text-white font-normal">{asset.exif.shutterSpeed}</strong></span>
               <span>ISO: <strong className="text-white font-normal">{asset.exif.iso}</strong></span>
             </div>

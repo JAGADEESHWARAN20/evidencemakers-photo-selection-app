@@ -7,7 +7,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Project } from '../../types/project.ts';
 import { Message } from '../../types/message.ts';
 import { services } from '../../services/index.ts';
-import { X, Send, ShieldCheck, User, MessageCircle } from 'lucide-react';
+import { X, Send, ShieldCheck, User, MessageCircle, AlertCircle } from 'lucide-react';
 
 interface ProjectChatDrawerProps {
   isOpen: boolean;
@@ -29,6 +29,7 @@ export const ProjectChatDrawer: React.FC<ProjectChatDrawerProps> = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   const loadMessages = async () => {
@@ -69,7 +70,7 @@ export const ProjectChatDrawer: React.FC<ProjectChatDrawerProps> = ({
       await loadMessages();
       onMessageSent();
     } catch (err: any) {
-      alert(err.message);
+      setErrorMessage(err.message || 'Unable to send message');
     } finally {
       setIsSending(false);
     }
@@ -91,7 +92,7 @@ export const ProjectChatDrawer: React.FC<ProjectChatDrawerProps> = ({
         <div className="p-4 sm:p-5 border-b border-[#242424] flex items-center justify-between bg-[#080808]">
           <div>
             <div className="flex items-center gap-2">
-              <MessageCircle className="w-5 h-5 text-[#F5B82E]" />
+              <MessageCircle className="w-5 h-5 text-[#D4AF37]" />
               <h3 id="project-chat-title" className="text-lg font-editorial font-semibold text-white">
                 Studio &amp; Client Communication
               </h3>
@@ -131,8 +132,8 @@ export const ProjectChatDrawer: React.FC<ProjectChatDrawerProps> = ({
                   <div className="flex items-center gap-1.5 mb-1 text-[11px] text-[#8C8C8C]">
                     {isAdmin ? (
                       <>
-                        <ShieldCheck className="w-3.5 h-3.5 text-[#F5B82E]" />
-                        <span className="text-[#F5B82E] font-medium">{msg.senderName}</span>
+                        <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <span className="text-[#D4AF37] font-medium">{msg.senderName}</span>
                       </>
                     ) : (
                       <>
@@ -150,7 +151,7 @@ export const ProjectChatDrawer: React.FC<ProjectChatDrawerProps> = ({
                     className={`p-3.5 rounded-lg text-xs leading-relaxed max-w-[85%] ${
                       isAdmin
                         ? 'bg-[#181818] text-white border border-[#242424]'
-                        : 'bg-[#F5B82E] text-black font-semibold shadow-sm'
+                        : 'bg-[#D4AF37] text-black font-semibold shadow-sm'
                     }`}
                   >
                     {msg.text}
@@ -163,19 +164,32 @@ export const ProjectChatDrawer: React.FC<ProjectChatDrawerProps> = ({
         </div>
 
         {/* Composer Form */}
-        <div className="p-4 border-t border-[#242424] bg-[#080808]">
+        <div className="p-4 border-t border-[#27272A] bg-[#0A0A0A] space-y-2">
+          {errorMessage && (
+            <div className="flex items-center gap-2 p-2 bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-md text-xs text-[#EF4444]">
+              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+              <span className="flex-1">{errorMessage}</span>
+              <button
+                type="button"
+                onClick={() => setErrorMessage(null)}
+                className="text-[#EF4444] hover:text-white text-xs"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
           <form onSubmit={handleSend} className="flex items-center gap-2">
             <input
               type="text"
               placeholder={`Send message as ${activeRole === 'admin' ? 'Studio' : clientName}...`}
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              className="flex-1 px-3.5 py-2.5 bg-[#121212] border border-[#242424] rounded-md text-xs text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#F5B82E]"
+              className="flex-1 px-3.5 py-2.5 bg-[#121212] border border-[#242424] rounded-md text-xs text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#D4AF37]"
             />
             <button
               type="submit"
               disabled={!inputText.trim() || isSending}
-              className="px-3.5 py-2.5 text-black bg-[#F5B82E] hover:bg-[#E2A622] disabled:opacity-40 rounded-md transition-colors font-sans"
+              className="px-3.5 py-2.5 text-black bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-40 rounded-md transition-colors font-sans"
               aria-label="Send message"
             >
               <Send className="w-4 h-4" />

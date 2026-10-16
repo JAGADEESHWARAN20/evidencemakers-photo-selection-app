@@ -82,7 +82,7 @@ export const GalleryPreloader: React.FC<GalleryPreloaderProps> = ({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-label="Evidence Makers Gallery Initialization"
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#080808] px-6 transition-opacity duration-150 ${
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0A0A0A] px-6 transition-opacity duration-150 ${
         isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
@@ -91,29 +91,29 @@ export const GalleryPreloader: React.FC<GalleryPreloaderProps> = ({
         <BrandLogo variant="vertical" size="xl" className="mb-8" />
 
         {/* Slim 2px linear progress track directly beneath logo */}
-        <div className="w-full bg-[#1C1C1C] h-[2px] rounded-full overflow-hidden relative">
+        <div className="w-full bg-[#181818] h-[2px] rounded-full overflow-hidden relative border border-[#27272A]">
           <div
-            className="h-full bg-[#F5B82E] transition-all duration-150 ease-out"
+            className="h-full bg-[#D4AF37] transition-all duration-150 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
 
         {/* Progress percentage and genuine status label in Sora */}
         <div className="flex items-center justify-between w-full mt-3 text-xs font-sans">
-          <span className="text-[#8C8C8C] tracking-wide truncate pr-2">
+          <span className="text-[#A1A1AA] tracking-wide truncate pr-2">
             {currentLabel}
           </span>
-          <span className="text-[#F5B82E] font-sans tabular-nums font-semibold shrink-0">
+          <span className="text-[#D4AF37] font-sans tabular-nums font-semibold shrink-0">
             {progress}%
           </span>
         </div>
 
         {hasError && (
           <div className="mt-6 flex flex-col items-center gap-2">
-            <span className="text-xs text-[#8C8C8C]">Failed to initialize gallery cache.</span>
+            <span className="text-xs text-[#A1A1AA]">Failed to initialize gallery cache.</span>
             <button
               onClick={handleRetry}
-              className="px-3 py-1.5 text-xs text-white bg-[#181818] hover:bg-[#242424] border border-[#242424] rounded transition-colors"
+              className="px-3 py-1.5 text-xs text-white bg-[#181818] hover:bg-[#202020] border border-[#27272A] rounded transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
             >
               Retry Initialization
             </button>

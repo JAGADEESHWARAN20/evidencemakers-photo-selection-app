@@ -87,37 +87,62 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
     Math.round((selectedAssets.length / project.selectionLimit) * 100)
   );
 
+  const [downloadFeedback, setDownloadFeedback] = useState<string | null>(null);
+
   const handleDownloadRaw = async (asset: GalleryAsset, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
       const res = await services.assetService.getRawDownloadUrl(asset.id);
-      window.open(res.downloadUrl, '_blank');
+      const link = document.createElement('a');
+      link.href = res.downloadUrl;
+      link.download = asset.rawFilename || `${asset.baseFilename}.cr3`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setDownloadFeedback(`Downloading RAW camera master for ${asset.baseFilename}`);
+      setTimeout(() => setDownloadFeedback(null), 3000);
     } catch (err: any) {
-      alert(err.message);
+      setDownloadFeedback(`Download failed: ${err.message || 'Unable to download asset'}`);
+      setTimeout(() => setDownloadFeedback(null), 3500);
     }
   };
 
   return (
     <div className="space-y-8 font-sans">
+      {downloadFeedback && (
+        <div className="p-3 bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-xl text-xs text-[#D4AF37] flex items-center justify-between animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <Download className="w-4 h-4" />
+            <span>{downloadFeedback}</span>
+          </div>
+          <button
+            onClick={() => setDownloadFeedback(null)}
+            className="text-white hover:text-[#D4AF37] text-xs font-medium"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* Header bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#242424] pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#27272A] pb-6">
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="p-2 text-[#8C8C8C] hover:text-white bg-[#121212] border border-[#242424] rounded-md transition-colors"
+            className="p-2 text-[#A1A1AA] hover:text-white bg-[#121212] border border-[#27272A] rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
             aria-label="Back to dashboard"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-sans text-xs text-[#F5B82E] font-medium">{project.id}</span>
+              <span className="font-sans text-xs text-[#D4AF37] font-medium">{project.id}</span>
               <span className="text-[#333333]">·</span>
               <h1 className="text-2xl sm:text-3xl font-editorial font-medium text-white">
                 Album Selection &amp; Production Review
               </h1>
             </div>
-            <p className="text-xs text-[#8C8C8C] mt-0.5 font-sans">
+            <p className="text-xs text-[#A1A1AA] mt-0.5 font-sans">
               Client: <span className="text-white font-medium">{project.clientName}</span> · Package: {project.packageName}
             </p>
           </div>
@@ -127,7 +152,7 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
           <button
             type="button"
             onClick={() => setIsCopied(!isCopied)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#F5B82E] hover:bg-[#E2A622] rounded-xl transition-all shadow-md min-h-[38px]"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-xl transition-all shadow-md min-h-[38px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
           >
             <IconShareCompass size={16} />
             <span>Share Gallery Link</span>
@@ -145,28 +170,28 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
       </div>
 
       {/* Quota Progress & Submission Status Banner */}
-      <div className="bg-[#121212] border border-[#242424] rounded-xl p-6 grid grid-cols-1 md:grid-cols-3 gap-6 font-sans">
+      <div className="bg-[#121212] border border-[#27272A] rounded-xl p-6 grid grid-cols-1 md:grid-cols-3 gap-6 font-sans">
         {/* Metric 1: Selection Progress */}
         <div className="space-y-2">
-          <span className="text-xs text-[#8C8C8C] font-medium uppercase tracking-wider">
+          <span className="text-xs text-[#A1A1AA] font-medium uppercase tracking-wider">
             Selection Status
           </span>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-editorial font-semibold text-[#F5B82E] tabular-nums">
+            <span className="text-3xl font-editorial font-semibold text-[#D4AF37] tabular-nums">
               {selectedAssets.length}
             </span>
-            <span className="text-base text-[#8C8C8C] font-sans">
+            <span className="text-base text-[#A1A1AA] font-sans">
               / {project.selectionLimit} images
             </span>
           </div>
           {/* Progress track */}
-          <div className="w-full bg-[#080808] h-1.5 rounded-full overflow-hidden border border-[#242424]">
+          <div className="w-full bg-[#0A0A0A] h-1.5 rounded-full overflow-hidden border border-[#27272A]">
             <div
-              className="bg-[#F5B82E] h-full transition-all duration-300"
+              className="bg-gradient-to-r from-[#D4AF37] to-[#C5A028] h-full transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <span className="text-[11px] text-[#8C8C8C] block">
+          <span className="text-[11px] text-[#A1A1AA] block">
             {project.selectionLimit - selectedAssets.length <= 0
               ? 'Package quota fulfilled'
               : `${project.selectionLimit - selectedAssets.length} images remaining in package`}
@@ -181,11 +206,11 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
           <div>
             {project.status === 'selections_submitted' || project.status === 'album_production' ? (
               <div className="flex items-center gap-2 text-white text-sm font-medium">
-                <CheckCircle2 className="w-4 h-4 text-[#F5B82E]" />
+                <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" />
                 <span>Submitted on {project.submissionDate ? new Date(project.submissionDate).toLocaleDateString() : 'Recent'}</span>
               </div>
             ) : (
-              <div className="flex items-center gap-2 text-[#F5B82E] text-sm font-medium">
+              <div className="flex items-center gap-2 text-[#D4AF37] text-sm font-medium">
                 <Clock className="w-4 h-4" />
                 <span>Client Still Selecting (Draft)</span>
               </div>
@@ -206,7 +231,7 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
             Album Production Workflow
           </span>
           <div className="flex items-center gap-2 text-sm text-white">
-            <BookOpen className="w-4 h-4 text-[#F5B82E]" />
+            <BookOpen className="w-4 h-4 text-[#D4AF37]" />
             <span>Ready for Flush-Mount Layout</span>
           </div>
           <p className="text-xs text-[#8C8C8C]">
@@ -226,7 +251,7 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
             aria-label="Filter album review photos"
           >
             <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-3.5 h-3.5 text-[#F5B82E]" />
+              <SlidersHorizontal className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span className="truncate">
                 {[
                   { id: 'selected', label: `Selected (${selectedAssets.length})` },
@@ -260,12 +285,12 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
                 }}
                 className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-md transition-colors min-h-[38px] ${
                   filterMode === tab.id
-                    ? 'bg-[#181818] text-[#F5B82E] font-medium'
+                    ? 'bg-[#181818] text-[#D4AF37] font-medium'
                     : 'text-[#8C8C8C] hover:text-white hover:bg-[#181818]/60'
                 }`}
               >
                 <span>{tab.label}</span>
-                {filterMode === tab.id && <Check className="w-3.5 h-3.5 text-[#F5B82E]" />}
+                {filterMode === tab.id && <Check className="w-3.5 h-3.5 text-[#D4AF37]" />}
               </button>
             ))}
           </Popover>
@@ -311,7 +336,7 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
               <div
                 key={asset.id}
                 onClick={() => onOpenPhotoDetail(asset)}
-                className="bg-[#121212] border border-[#242424] hover:border-[#F5B82E]/50 rounded-lg overflow-hidden transition-all cursor-pointer group flex flex-col justify-between"
+                className="bg-[#121212] border border-[#242424] hover:border-[#D4AF37]/50 rounded-lg overflow-hidden transition-all cursor-pointer group flex flex-col justify-between"
               >
                 {/* Photo frame */}
                 <div className="aspect-[4/3] bg-[#080808] relative overflow-hidden">
@@ -325,7 +350,7 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
                   {/* Badges Overlay */}
                   <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
                     {asset.isSelected ? (
-                      <span className="px-2 py-0.5 bg-[#F5B82E] text-black text-[10px] font-bold rounded uppercase tracking-wider shadow">
+                      <span className="px-2 py-0.5 bg-[#D4AF37] text-black text-[10px] font-bold rounded uppercase tracking-wider shadow">
                         Selected for Album
                       </span>
                     ) : (
@@ -335,7 +360,7 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
                     )}
 
                     {assetComments.length > 0 && (
-                      <span className="px-2 py-0.5 bg-black/80 backdrop-blur-xs text-[#F5B82E] text-[10px] font-medium rounded flex items-center gap-1 shadow">
+                      <span className="px-2 py-0.5 bg-black/80 backdrop-blur-xs text-[#D4AF37] text-[10px] font-medium rounded flex items-center gap-1 shadow">
                         <MessageSquare className="w-3 h-3" />
                         {assetComments.length}
                       </span>
@@ -364,7 +389,7 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
 
                   {assetComments.length > 0 && (
                     <div className="p-2 bg-[#080808] border border-[#242424] rounded text-[11px] text-[#8C8C8C] line-clamp-2">
-                      <span className="text-[#F5B82E] font-medium mr-1">
+                      <span className="text-[#D4AF37] font-medium mr-1">
                         {assetComments[assetComments.length - 1].senderName}:
                       </span>
                       <span className="text-white">
@@ -379,7 +404,7 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
                       className="w-full mt-2 inline-flex items-center justify-center gap-1.5 py-1 text-[11px] text-[#8C8C8C] hover:text-white bg-[#080808] hover:bg-[#181818] border border-[#242424] rounded transition-colors"
                       title="Download full uncompressed RAW file for editing"
                     >
-                      <Download className="w-3 h-3 text-[#F5B82E]" />
+                      <Download className="w-3 h-3 text-[#D4AF37]" />
                       <span>Download RAW Negative</span>
                     </button>
                   )}

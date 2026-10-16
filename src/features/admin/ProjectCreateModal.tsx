@@ -113,7 +113,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
         </div>
 
         {errorMessage && (
-          <div className="p-3 bg-[#181818] border border-[#F5B82E]/50 rounded-md text-xs text-[#F5B82E]">
+          <div className="p-3 bg-[#181818] border border-[#D4AF37]/50 rounded-md text-xs text-[#D4AF37]">
             {errorMessage}
           </div>
         )}
@@ -131,7 +131,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                 placeholder="e.g. Arjun & Priya Wedding"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#080808] border border-[#242424] rounded-md text-sm text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#F5B82E] transition-colors"
+                className="w-full px-3.5 py-2.5 bg-[#080808] border border-[#242424] rounded-md text-sm text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#D4AF37] transition-colors"
               />
             </div>
 
@@ -145,7 +145,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                 placeholder="e.g. Arjun & Priya Sharma"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#080808] border border-[#242424] rounded-md text-sm text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#F5B82E] transition-colors"
+                className="w-full px-3.5 py-2.5 bg-[#080808] border border-[#242424] rounded-md text-sm text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#D4AF37] transition-colors"
               />
             </div>
 
@@ -159,7 +159,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                 placeholder="client@example.com"
                 value={clientEmail}
                 onChange={(e) => setClientEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#080808] border border-[#242424] rounded-md text-sm text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#F5B82E] transition-colors"
+                className="w-full px-3.5 py-2.5 bg-[#080808] border border-[#242424] rounded-md text-sm text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#D4AF37] transition-colors"
               />
             </div>
 
@@ -171,7 +171,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                 type="date"
                 value={eventDate}
                 onChange={(e) => setEventDate(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#080808] border border-[#242424] rounded-md text-sm text-white focus:outline-none focus:border-[#F5B82E] transition-colors"
+                className="w-full px-3.5 py-2.5 bg-[#080808] border border-[#242424] rounded-md text-sm text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
               />
             </div>
 
@@ -185,7 +185,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                 max="500"
                 value={customQuota}
                 onChange={(e) => setCustomQuota(parseInt(e.target.value) || 0)}
-                className="w-full px-3.5 py-2.5 bg-[#080808] border border-[#242424] rounded-md text-sm text-white focus:outline-none focus:border-[#F5B82E] transition-colors"
+                className="w-full px-3.5 py-2.5 bg-[#080808] border border-[#242424] rounded-md text-sm text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
               />
             </div>
           </div>
@@ -203,7 +203,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                   onClick={() => handlePackageSelect(pkg)}
                   className={`p-3 rounded-lg border text-left transition-all ${
                     selectedPackage.id === pkg.id
-                      ? 'border-[#F5B82E] bg-[#F5B82E]/10 text-white'
+                      ? 'border-[#D4AF37] bg-[#D4AF37]/10 text-white'
                       : 'border-[#242424] bg-[#080808] text-[#8C8C8C] hover:border-[#333333]'
                   }`}
                 >
@@ -212,7 +212,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                       {pkg.name}
                     </span>
                     {selectedPackage.id === pkg.id && (
-                      <Check className="w-4 h-4 text-[#F5B82E]" />
+                      <Check className="w-4 h-4 text-[#D4AF37]" />
                     )}
                   </div>
                   <span className="text-[11px] text-[#8C8C8C] block mt-1">
@@ -232,7 +232,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
               rows={2}
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
-              className="w-full px-3.5 py-2 bg-[#080808] border border-[#242424] rounded-md text-xs text-white focus:outline-none focus:border-[#F5B82E] transition-colors"
+              className="w-full px-3.5 py-2 bg-[#080808] border border-[#242424] rounded-md text-xs text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
             />
           </div>
 
@@ -240,7 +240,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
           <div className="p-4 bg-[#080808] border border-[#242424] rounded-lg space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-[#F5B82E]" />
+                <Shield className="w-4 h-4 text-[#D4AF37]" />
                 <span className="text-xs font-medium text-white">
                   Client PIN Access Protection
                 </span>
@@ -249,7 +249,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                 type="checkbox"
                 checked={isPinProtected}
                 onChange={(e) => setIsPinProtected(e.target.checked)}
-                className="w-4 h-4 rounded text-[#F5B82E] focus:ring-[#F5B82E] accent-[#F5B82E] cursor-pointer"
+                className="w-4 h-4 rounded text-[#D4AF37] focus:ring-[#D4AF37] accent-[#D4AF37] cursor-pointer"
               />
             </div>
 
@@ -261,7 +261,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                   maxLength={6}
                   value={sharePin}
                   onChange={(e) => setSharePin(e.target.value)}
-                  className="w-24 px-2 py-1 text-center font-sans font-medium text-sm bg-[#121212] border border-[#242424] rounded text-[#F5B82E]"
+                  className="w-24 px-2 py-1 text-center font-sans font-medium text-sm bg-[#121212] border border-[#242424] rounded text-[#D4AF37]"
                 />
                 <button
                   type="button"
@@ -287,7 +287,7 @@ export const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#F5B82E] hover:bg-[#E2A622] disabled:opacity-50 rounded-md transition-colors"
+              className="px-5 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-50 rounded-md transition-colors"
             >
               {isSubmitting ? 'Creating...' : 'Create & Generate Link'}
             </button>

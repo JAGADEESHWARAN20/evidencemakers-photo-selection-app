@@ -7,7 +7,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { GalleryAsset } from '../../types/asset.ts';
 import { Message } from '../../types/message.ts';
 import { services } from '../../services/index.ts';
-import { Send, MessageSquare, Sparkles, User, ShieldCheck } from 'lucide-react';
+import { Send, MessageSquare, Sparkles, User, ShieldCheck, AlertCircle } from 'lucide-react';
 
 interface ImageChatPanelProps {
   projectId: string;
@@ -34,6 +34,7 @@ export const ImageChatPanel: React.FC<ImageChatPanelProps> = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const loadMessages = async () => {
@@ -70,7 +71,7 @@ export const ImageChatPanel: React.FC<ImageChatPanelProps> = ({
       await loadMessages();
       onMessageSent();
     } catch (err: any) {
-      alert(`Message error: ${err.message}`);
+      setErrorMessage(err.message || 'Unable to send message');
     } finally {
       setIsSending(false);
     }
@@ -82,7 +83,7 @@ export const ImageChatPanel: React.FC<ImageChatPanelProps> = ({
       <div className="p-4 border-b border-[#242424] flex items-center justify-between">
         <div>
           <div className="flex items-center gap-1.5">
-            <MessageSquare className="w-4 h-4 text-[#F5B82E]" />
+            <MessageSquare className="w-4 h-4 text-[#D4AF37]" />
             <h4 className="text-sm font-editorial font-semibold text-white">
               Photo Notes &amp; Retouch Chat
             </h4>
@@ -114,8 +115,8 @@ export const ImageChatPanel: React.FC<ImageChatPanelProps> = ({
                 <div className="flex items-center gap-1.5 mb-1 text-[11px] text-[#8C8C8C]">
                   {isAdmin ? (
                     <>
-                      <ShieldCheck className="w-3 h-3 text-[#F5B82E]" />
-                      <span className="text-[#F5B82E] font-medium">{msg.senderName}</span>
+                      <ShieldCheck className="w-3 h-3 text-[#D4AF37]" />
+                      <span className="text-[#D4AF37] font-medium">{msg.senderName}</span>
                     </>
                   ) : (
                     <>
@@ -133,7 +134,7 @@ export const ImageChatPanel: React.FC<ImageChatPanelProps> = ({
                   className={`p-3 rounded-lg text-xs leading-relaxed max-w-[90%] ${
                     isAdmin
                       ? 'bg-[#181818] text-white border border-[#242424]'
-                      : 'bg-[#F5B82E] text-black font-semibold shadow'
+                      : 'bg-[#D4AF37] text-black font-semibold shadow'
                   }`}
                 >
                   {msg.text}
@@ -148,7 +149,7 @@ export const ImageChatPanel: React.FC<ImageChatPanelProps> = ({
       {/* Quick suggestions */}
       <div className="px-3 pt-2 border-t border-[#1C1C1C] bg-[#0A0A0A]">
         <div className="text-[10px] text-[#8C8C8C] mb-1 flex items-center gap-1">
-          <Sparkles className="w-3 h-3 text-[#F5B82E]" />
+          <Sparkles className="w-3 h-3 text-[#D4AF37]" />
           <span>Quick notes:</span>
         </div>
         <div className="flex flex-wrap gap-1.5 pb-2">
@@ -166,7 +167,20 @@ export const ImageChatPanel: React.FC<ImageChatPanelProps> = ({
       </div>
 
       {/* Message Composer */}
-      <div className="p-3 border-t border-[#242424] bg-[#080808]">
+      <div className="p-3 border-t border-[#27272A] bg-[#0A0A0A] space-y-2">
+        {errorMessage && (
+          <div className="flex items-center gap-1.5 p-2 bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-md text-[11px] text-[#EF4444]">
+            <AlertCircle className="w-3 h-3 shrink-0" />
+            <span className="flex-1">{errorMessage}</span>
+            <button
+              type="button"
+              onClick={() => setErrorMessage(null)}
+              className="text-[#EF4444] hover:text-white"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -179,12 +193,12 @@ export const ImageChatPanel: React.FC<ImageChatPanelProps> = ({
             placeholder={`Message as ${activeRole === 'admin' ? 'Studio' : clientName}...`}
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            className="flex-1 px-3 py-2 bg-[#121212] border border-[#242424] rounded-md text-xs text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#F5B82E]"
+            className="flex-1 px-3 py-2 bg-[#121212] border border-[#242424] rounded-md text-xs text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#D4AF37]"
           />
           <button
             type="submit"
             disabled={!inputMessage.trim() || isSending}
-            className="p-2 text-black bg-[#F5B82E] hover:bg-[#E2A622] disabled:opacity-40 rounded-md transition-colors"
+            className="p-2 text-black bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-40 rounded-md transition-colors"
             aria-label="Send message"
           >
             <Send className="w-4 h-4" />

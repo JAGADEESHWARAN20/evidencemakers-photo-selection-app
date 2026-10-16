@@ -146,33 +146,39 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
   const handleDownloadRaw = async (asset: GalleryAsset) => {
     try {
       const res = await services.assetService.getRawDownloadUrl(asset.id);
-      window.open(res.downloadUrl, '_blank');
+      const link = document.createElement('a');
+      link.href = res.downloadUrl;
+      link.download = asset.rawFilename || `${asset.baseFilename}.cr3`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setStatusMessage(`Initiated direct RAW camera master download for: ${asset.baseFilename}`);
     } catch (err: any) {
-      alert(`Download error: ${err.message}`);
+      setStatusMessage(`Download error: ${err.message || 'Unable to download asset'}`);
     }
   };
 
   return (
     <div className="space-y-8 font-sans">
       {/* Top Breadcrumb & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#242424] pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#27272A] pb-6">
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="p-2 text-[#8C8C8C] hover:text-white bg-[#121212] border border-[#242424] rounded-md transition-colors"
+            className="p-2 text-[#A1A1AA] hover:text-white bg-[#121212] border border-[#27272A] rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
             aria-label="Back to dashboard"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-sans text-xs text-[#F5B82E] font-medium">{project.id}</span>
+              <span className="font-sans text-xs text-[#D4AF37] font-medium">{project.id}</span>
               <span className="text-[#333333]">·</span>
               <h1 className="text-2xl sm:text-3xl font-editorial font-medium text-white">
                 RAW &amp; JPEG Asset Management
               </h1>
             </div>
-            <p className="text-xs text-[#8C8C8C] mt-0.5">
+            <p className="text-xs text-[#A1A1AA] mt-0.5">
               Project: <span className="text-white font-medium">{project.name}</span> · {project.clientName}
             </p>
           </div>
@@ -181,7 +187,7 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#F5B82E] hover:bg-[#E2A622] rounded-md transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
           >
             <UploadCloud className="w-4 h-4" />
             Select RAW &amp; JPEG Batch
@@ -199,16 +205,16 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
 
       {/* Batch Staging & Pairing Engine Panel */}
       {selectedUploadFiles.length > 0 && stagedPairingSummary && (
-        <div className="bg-[#121212] border border-[#F5B82E]/40 rounded-xl p-6 space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#242424] pb-4">
+        <div className="bg-[#121212] border border-[#D4AF37]/40 rounded-xl p-6 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#27272A] pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <Layers className="w-5 h-5 text-[#F5B82E]" />
+                <Layers className="w-5 h-5 text-[#D4AF37]" />
                 <h3 className="text-lg font-editorial font-semibold text-white">
                   Batch Pairing Verification ({selectedUploadFiles.length} files selected)
                 </h3>
               </div>
-              <p className="text-xs text-[#8C8C8C] mt-1 font-sans">
+              <p className="text-xs text-[#A1A1AA] mt-1 font-sans">
                 Automated matching engine pairing RAW camera masters (.CR2, .CR3, .NEF, .ARW, .DNG) with web JPEG previews.
               </p>
             </div>
@@ -220,14 +226,14 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
                   setUploadProgressList([]);
                 }}
                 disabled={isUploading}
-                className="px-3 py-1.5 text-xs text-[#8C8C8C] hover:text-white"
+                className="px-3 py-1.5 text-xs text-[#A1A1AA] hover:text-white"
               >
                 Clear Batch
               </button>
               <button
                 onClick={handleExecuteUpload}
                 disabled={isUploading}
-                className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#F5B82E] hover:bg-[#E2A622] disabled:opacity-50 rounded-md transition-colors shadow-sm"
+                className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-50 rounded-md transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
               >
                 {isUploading ? 'Uploading to Storage...' : 'Start Presigned Direct Upload'}
               </button>
@@ -246,7 +252,7 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
                     {group.baseFilename}
                   </span>
                   {group.status === 'paired' && (
-                    <span className="text-[11px] text-[#F5B82E] flex items-center gap-1 font-medium">
+                    <span className="text-[11px] text-[#D4AF37] flex items-center gap-1 font-medium">
                       <FileCheck className="w-3.5 h-3.5" /> Paired
                     </span>
                   )}
@@ -261,7 +267,7 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
                     </span>
                   )}
                   {group.status === 'duplicate' && (
-                    <span className="text-[11px] text-[#F5B82E] flex items-center gap-1 font-medium">
+                    <span className="text-[11px] text-[#D4AF37] flex items-center gap-1 font-medium">
                       <AlertTriangle className="w-3.5 h-3.5" /> Duplicate
                     </span>
                   )}
@@ -273,7 +279,7 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
                 </div>
 
                 {group.warnings.length > 0 && (
-                  <p className="text-[10px] text-[#F5B82E]/90 leading-tight">
+                  <p className="text-[10px] text-[#D4AF37]/90 leading-tight">
                     {group.warnings[0]}
                   </p>
                 )}
@@ -344,7 +350,7 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     {asset.isSelected && (
-                      <div className="absolute top-2 right-2 px-2 py-0.5 bg-[#F5B82E] text-black text-[10px] font-bold rounded uppercase tracking-wider">
+                      <div className="absolute top-2 right-2 px-2 py-0.5 bg-[#D4AF37] text-black text-[10px] font-bold rounded uppercase tracking-wider">
                         Album Pick
                       </div>
                     )}
@@ -368,7 +374,7 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
                           <span
                             className={
                               asset.pairingStatus === 'paired'
-                                ? 'text-[#F5B82E] font-medium'
+                                ? 'text-[#D4AF37] font-medium'
                                 : 'text-white'
                             }
                           >
@@ -394,7 +400,7 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
                         className="w-full mt-2 inline-flex items-center justify-center gap-1.5 py-1.5 text-[11px] font-medium text-[#8C8C8C] hover:text-white bg-[#121212] hover:bg-[#181818] border border-[#242424] rounded transition-colors"
                         title="Authorized short-lived presigned RAW download"
                       >
-                        <Download className="w-3 h-3 text-[#F5B82E]" />
+                        <Download className="w-3 h-3 text-[#D4AF37]" />
                         <span>Download RAW ({asset.rawExtension})</span>
                       </button>
                     )}

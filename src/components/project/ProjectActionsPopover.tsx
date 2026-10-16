@@ -54,7 +54,7 @@ export const ProjectActionsPopover: React.FC<ProjectActionsPopoverProps> = ({
           e.stopPropagation();
           setIsOpen(!isOpen)}
         }
-        className="p-2 text-[#8C8C8C] hover:text-white bg-[#080808] hover:bg-[#181818] border border-[#242424] hover:border-[#333333] rounded-lg transition-colors flex items-center justify-center min-w-[44px] min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F5B82E]"
+        className="p-2 text-[#8C8C8C] hover:text-white bg-[#080808] hover:bg-[#181818] border border-[#242424] hover:border-[#333333] rounded-lg transition-colors flex items-center justify-center min-w-[44px] min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
         aria-label="More project actions"
         aria-expanded={isOpen}
       >
@@ -81,8 +81,8 @@ export const ProjectActionsPopover: React.FC<ProjectActionsPopoverProps> = ({
             >
               {copied ? (
                 <>
-                  <Check className="w-4 h-4 text-[#F5B82E] shrink-0" />
-                  <span className="text-[#F5B82E] font-medium">Link Copied!</span>
+                  <Check className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                  <span className="text-[#D4AF37] font-medium">Link Copied!</span>
                 </>
               ) : (
                 <>
@@ -121,7 +121,7 @@ export const ProjectActionsPopover: React.FC<ProjectActionsPopoverProps> = ({
           {project.isPinProtected && (
             <div className="pt-1.5 border-t border-[#242424] px-3 py-1 flex items-center justify-between text-[10px] text-[#8C8C8C]">
               <span className="flex items-center gap-1">
-                <Shield className="w-3 h-3 text-[#F5B82E]" /> PIN Protected
+                <Shield className="w-3 h-3 text-[#D4AF37]" /> PIN Protected
               </span>
               <span className="font-sans font-medium text-white">{project.sharePin}</span>
             </div>
@@ -171,8 +171,8 @@ export const ProjectActionsPopover: React.FC<ProjectActionsPopoverProps> = ({
               >
                 {copied ? (
                   <>
-                    <Check className="w-4 h-4 text-[#F5B82E] shrink-0" />
-                    <span className="text-[#F5B82E] font-medium">Client Link Copied!</span>
+                    <Check className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                    <span className="text-[#D4AF37] font-medium">Client Link Copied!</span>
                   </>
                 ) : (
                   <>
@@ -212,7 +212,7 @@ export const ProjectActionsPopover: React.FC<ProjectActionsPopoverProps> = ({
                   setIsOpen(false);
                   onOpenClientPortal();
                 }}
-                className="w-full flex items-center gap-3 px-3.5 py-3 text-xs text-left font-semibold text-black bg-[#F5B82E] hover:bg-[#E2A622] rounded-lg transition-colors min-h-[46px]"
+                className="w-full flex items-center gap-3 px-3.5 py-3 text-xs text-left font-semibold text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-lg transition-colors min-h-[46px]"
               >
                 <ExternalLink className="w-4 h-4 text-black shrink-0" />
                 <span>Open Client Proofing Portal</span>
@@ -222,7 +222,7 @@ export const ProjectActionsPopover: React.FC<ProjectActionsPopoverProps> = ({
             {project.isPinProtected && (
               <div className="pt-2 border-t border-[#242424] flex items-center justify-between text-xs text-[#8C8C8C]">
                 <span className="flex items-center gap-1.5">
-                  <Shield className="w-3.5 h-3.5 text-[#F5B82E]" /> Client PIN:
+                  <Shield className="w-3.5 h-3.5 text-[#D4AF37]" /> Client PIN:
                 </span>
                 <span className="font-mono text-sm font-semibold text-white bg-[#080808] px-2.5 py-1 rounded border border-[#242424]">
                   {project.sharePin}

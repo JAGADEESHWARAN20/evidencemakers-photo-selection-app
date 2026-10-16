@@ -62,7 +62,7 @@ export const Popover: React.FC<PopoverProps> = ({
       ref={popoverRef}
       role="menu"
       tabIndex={-1}
-      className={`absolute z-50 mt-2 bg-[#121212] border border-[#242424] rounded-xl shadow-2xl overflow-hidden focus:outline-none transition-all duration-150 animate-in fade-in-0 zoom-in-95 max-w-[calc(100vw-1.5rem)] ${alignmentClass} ${className}`}
+      className={`absolute z-50 mt-2 bg-[#121212] border border-[#27272A] rounded-xl shadow-2xl overflow-hidden focus:outline-none transition-all duration-150 animate-in fade-in-0 zoom-in-95 max-w-[calc(100vw-1.5rem)] ${alignmentClass} ${className}`}
     >
       {children}
     </div>

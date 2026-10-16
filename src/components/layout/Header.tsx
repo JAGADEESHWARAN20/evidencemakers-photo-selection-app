@@ -38,13 +38,13 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-[#080808]/95 backdrop-blur-md border-b border-[#242424] transition-colors">
+      <header className="sticky top-0 z-40 w-full bg-[#0A0A0A]/95 backdrop-blur-md border-b border-[#27272A] transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4 sm:gap-8">
           {/* Zone 1: Single Primary Global Brand Wordmark */}
           <div className="flex items-center gap-4 shrink-0">
             <button
               onClick={() => onNavigate('dashboard')}
-              className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F5B82E] rounded p-1 text-left shrink-0 transition-opacity hover:opacity-90"
+              className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] rounded p-1 text-left shrink-0 transition-opacity hover:opacity-90"
               aria-label="Evidence Makers Studio Home"
             >
               <BrandLogo variant="horizontal" size="md" />
@@ -60,11 +60,11 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => onNavigate('dashboard')}
               className={`group inline-flex items-center gap-2.5 px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0 border transition-colors ${
                 currentView === 'dashboard'
-                  ? 'bg-[#181818] text-[#F5B82E] border-[#2F2F2F]'
-                  : 'text-[#8C8C8C] hover:text-white hover:bg-[#121212] border-transparent'
+                  ? 'bg-[#181818] text-[#D4AF37] border-[#27272A]'
+                  : 'text-[#A1A1AA] hover:text-white hover:bg-[#121212] border-transparent'
               }`}
             >
-              <IconStudioOverview size={17} className={currentView === 'dashboard' ? 'text-[#F5B82E]' : 'text-[#8C8C8C] group-hover:text-white'} />
+              <IconStudioOverview size={17} className={currentView === 'dashboard' ? 'text-[#D4AF37]' : 'text-[#A1A1AA] group-hover:text-white'} />
               <span>Dashboard</span>
             </button>
 
@@ -72,11 +72,11 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => onNavigate('projects')}
               className={`group inline-flex items-center gap-2.5 px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0 border transition-colors ${
                 currentView === 'projects'
-                  ? 'bg-[#181818] text-[#F5B82E] border-[#2F2F2F]'
-                  : 'text-[#8C8C8C] hover:text-white hover:bg-[#121212] border-transparent'
+                  ? 'bg-[#181818] text-[#D4AF37] border-[#27272A]'
+                  : 'text-[#A1A1AA] hover:text-white hover:bg-[#121212] border-transparent'
               }`}
             >
-              <IconProjectsFolio size={17} className={currentView === 'projects' ? 'text-[#F5B82E]' : 'text-[#8C8C8C] group-hover:text-white'} />
+              <IconProjectsFolio size={17} className={currentView === 'projects' ? 'text-[#D4AF37]' : 'text-[#A1A1AA] group-hover:text-white'} />
               <span>Projects</span>
             </button>
 
@@ -84,11 +84,11 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => onNavigate('assets')}
               className={`group inline-flex items-center gap-2.5 px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0 border transition-colors ${
                 currentView === 'assets'
-                  ? 'bg-[#181818] text-[#F5B82E] border-[#2F2F2F]'
-                  : 'text-[#8C8C8C] hover:text-white hover:bg-[#121212] border-transparent'
+                  ? 'bg-[#181818] text-[#D4AF37] border-[#27272A]'
+                  : 'text-[#A1A1AA] hover:text-white hover:bg-[#121212] border-transparent'
               }`}
             >
-              <IconRawAperture size={17} className={currentView === 'assets' ? 'text-[#F5B82E]' : 'text-[#8C8C8C] group-hover:text-white'} />
+              <IconRawAperture size={17} className={currentView === 'assets' ? 'text-[#D4AF37]' : 'text-[#A1A1AA] group-hover:text-white'} />
               <span>RAW &amp; Assets</span>
             </button>
 
@@ -96,11 +96,11 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => onNavigate('selection_review')}
               className={`group inline-flex items-center gap-2.5 px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0 border transition-colors ${
                 currentView === 'selection_review'
-                  ? 'bg-[#181818] text-[#F5B82E] border-[#2F2F2F]'
-                  : 'text-[#8C8C8C] hover:text-white hover:bg-[#121212] border-transparent'
+                  ? 'bg-[#181818] text-[#D4AF37] border-[#27272A]'
+                  : 'text-[#A1A1AA] hover:text-white hover:bg-[#121212] border-transparent'
               }`}
             >
-              <IconAlbumSelection size={17} className={currentView === 'selection_review' ? 'text-[#F5B82E]' : 'text-[#8C8C8C] group-hover:text-white'} />
+              <IconAlbumSelection size={17} className={currentView === 'selection_review' ? 'text-[#D4AF37]' : 'text-[#A1A1AA] group-hover:text-white'} />
               <span>Album Selections</span>
             </button>
           </nav>
@@ -110,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Desktop API Docs trigger */}
             <button
               onClick={onOpenApiDocs}
-              className="hidden sm:inline-flex items-center px-3 py-2 text-xs font-medium text-[#8C8C8C] hover:text-white bg-[#121212] hover:bg-[#181818] border border-[#242424] rounded-lg transition-colors whitespace-nowrap shrink-0 min-h-[40px]"
+              className="hidden sm:inline-flex items-center px-3.5 py-2 text-xs font-medium text-[#A1A1AA] hover:text-white bg-[#121212] hover:bg-[#181818] border border-[#27272A] rounded-lg transition-colors whitespace-nowrap shrink-0 min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
               title="View production backend integration specifications"
             >
               API Integration
@@ -119,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* New Project Button */}
             <button
               onClick={onOpenNewProject}
-              className="group inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold tracking-wider uppercase text-black bg-[#F5B82E] hover:bg-[#E2A622] rounded-lg transition-all shadow-sm hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap shrink-0 min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F5B82E]"
+              className="group inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold tracking-wider uppercase text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-lg transition-all shadow-sm hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap shrink-0 min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
             >
               <IconPlusProject size={15} />
               <span className="hidden sm:inline">New Project</span>
@@ -130,7 +130,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden p-2.5 text-[#8C8C8C] hover:text-white bg-[#121212] hover:bg-[#181818] border border-[#242424] rounded-lg transition-colors flex items-center justify-center min-w-[44px] min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F5B82E]"
+              className="md:hidden p-2.5 text-[#A1A1AA] hover:text-white bg-[#121212] hover:bg-[#181818] border border-[#27272A] rounded-lg transition-colors flex items-center justify-center min-w-[44px] min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
               aria-label="Open mobile navigation menu"
               aria-expanded={isMobileMenuOpen}
             >

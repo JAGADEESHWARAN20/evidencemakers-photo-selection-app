@@ -190,18 +190,18 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
   // 1. PIN Lock Screen View: Single Primary Global Logo, No duplicate logos, No studio admin buttons
   if (portalState === 'pin_gate') {
     return (
-      <div className="min-h-screen bg-[#080808] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-12 font-sans selection:bg-[#F5B82E]/30">
+      <div className="min-h-screen bg-[#080808] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-12 font-sans selection:bg-[#D4AF37]/30">
         <div className="w-full max-w-md bg-[#111111] border border-[#242424] rounded-2xl p-8 sm:p-10 text-center space-y-8 shadow-2xl animate-in fade-in duration-300">
           {/* Single Primary Global Brand Wordmark */}
           <div className="flex flex-col items-center space-y-3">
             <BrandLogo variant="horizontal" size="md" />
-            <div className="w-10 h-10 bg-[#F5B82E]/10 border border-[#F5B82E]/25 rounded-full flex items-center justify-center text-[#F5B82E] mt-1 shadow-inner">
+            <div className="w-10 h-10 bg-[#D4AF37]/10 border border-[#D4AF37]/25 rounded-full flex items-center justify-center text-[#D4AF37] mt-1 shadow-inner">
               <IconMonogramKey size={20} />
             </div>
           </div>
 
           <div className="space-y-2">
-            <span className="text-[11px] uppercase tracking-[0.25em] text-[#F5B82E] font-medium block">
+            <span className="text-[11px] uppercase tracking-[0.25em] text-[#D4AF37] font-medium block">
               Private Client Portal
             </span>
             <h1 className="text-2xl sm:text-3xl font-editorial font-medium text-white tracking-tight">
@@ -228,7 +228,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
                 placeholder="••••"
                 value={pinInput}
                 onChange={(e) => setPinInput(e.target.value)}
-                className="w-48 text-center text-2xl font-mono tracking-[0.3em] py-3.5 px-4 bg-[#080808] border border-[#292929] rounded-xl text-[#F5B82E] focus:outline-none focus:border-[#F5B82E] focus:ring-1 focus:ring-[#F5B82E] transition-all shadow-inner"
+                className="w-48 text-center text-2xl font-mono tracking-[0.3em] py-3.5 px-4 bg-[#080808] border border-[#292929] rounded-xl text-[#D4AF37] focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all shadow-inner"
               />
               <span className="text-[11px] text-[#8C8C8C]">
                 (Demo PIN: <strong className="text-white font-mono">{project.sharePin || '4892'}</strong>)
@@ -238,7 +238,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
             <div>
               <button
                 type="submit"
-                className="w-full py-3.5 px-6 text-xs font-semibold uppercase tracking-widest text-black bg-[#F5B82E] hover:bg-[#E2A622] rounded-xl transition-all shadow-lg hover:shadow-[#F5B82E]/20 hover:scale-[1.01] active:scale-[0.99]"
+                className="w-full py-3.5 px-6 text-xs font-semibold uppercase tracking-widest text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-xl transition-all shadow-lg hover:shadow-[#D4AF37]/20 hover:scale-[1.01] active:scale-[0.99]"
               >
                 Unlock Private Gallery
               </button>
@@ -246,7 +246,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
           </form>
 
           <div className="pt-3 border-t border-[#1C1C1C] flex items-center justify-center gap-2 text-[11px] text-[#8C8C8C]">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#F5B82E]" />
+            <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>Encrypted End-to-End Client Session</span>
           </div>
         </div>
@@ -274,12 +274,12 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="space-y-8 sm:space-y-10 font-sans selection:bg-[#F5B82E]/30"
+      className="space-y-8 sm:space-y-10 font-sans selection:bg-[#D4AF37]/30"
     >
       {/* Standalone Client Top Bar: Single Primary Global Logo */}
       <div className="flex items-center justify-between pb-6 border-b border-[#242424]">
         <BrandLogo variant="horizontal" size="sm" />
-        <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-[#F5B82E] font-medium">
+        <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-[#D4AF37] font-medium">
           <span>{project.packageName}</span>
           <span className="text-[#333333]">·</span>
           <span className="text-[#8C8C8C]">{project.eventDate}</span>
@@ -298,19 +298,19 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
       </div>
 
       {/* Responsive Flexbox Selection Guidance Bar (Generous Padding & Breathing Room) */}
-      <div className="sticky top-4 z-30 bg-[#0E0E0E]/95 backdrop-blur-md border border-[#242424] rounded-2xl p-6 sm:p-7 shadow-2xl">
+      <div className="sticky top-4 z-30 bg-[#121212]/95 backdrop-blur-md border border-[#27272A] rounded-2xl p-6 sm:p-7 shadow-2xl">
         <div className="flex flex-wrap items-center justify-between gap-6 sm:gap-8">
           {/* Left Block: Raw Quota Counter & Linear Meter */}
           <div className="flex flex-wrap items-center gap-6 sm:gap-10 flex-1 min-w-[280px]">
             <div className="space-y-1 shrink-0">
-              <span className="text-[11px] uppercase tracking-wider text-[#8C8C8C] font-semibold block">
+              <span className="text-[11px] uppercase tracking-wider text-[#A1A1AA] font-semibold block">
                 Album Selections
               </span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-editorial font-bold text-[#F5B82E] tabular-nums">
+                <span className="text-2xl sm:text-3xl font-editorial font-bold text-[#D4AF37] tabular-nums">
                   {selectedAssets.length}
                 </span>
-                <span className="text-sm text-[#8C8C8C] font-sans">
+                <span className="text-sm text-[#A1A1AA] font-sans">
                   / {project.selectionLimit} selected
                 </span>
               </div>
@@ -318,20 +318,20 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
 
             {/* Linear Progress Bar */}
             <div className="flex-1 min-w-[200px] max-w-md space-y-2">
-              <div className="w-full bg-[#181818] h-2.5 rounded-full overflow-hidden border border-[#262626]">
+              <div className="w-full bg-[#181818] h-2.5 rounded-full overflow-hidden border border-[#27272A]">
                 <div
-                  className="bg-[#F5B82E] h-full rounded-full transition-all duration-300"
+                  className="bg-gradient-to-r from-[#D4AF37] to-[#C5A028] h-full rounded-full transition-all duration-300"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
 
-              <div className="flex items-center justify-between text-xs text-[#8C8C8C]">
+              <div className="flex items-center justify-between text-xs text-[#A1A1AA]">
                 <span>
                   {remainingCount === 0
                     ? 'Quota fulfilled'
                     : `${remainingCount} remaining`}
                 </span>
-                <span className="font-mono text-[11px] text-[#F5B82E]">{progressPercent}%</span>
+                <span className="font-mono text-[11px] text-[#D4AF37]">{progressPercent}%</span>
               </div>
             </div>
           </div>
@@ -342,18 +342,18 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
             <button
               type="button"
               onClick={() => setCuratorMode(curatorMode === 'swipe' ? 'grid' : 'swipe')}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl transition-all min-h-[44px] shadow-sm ${
+              className={`inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl transition-all min-h-[44px] shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] ${
                 curatorMode === 'swipe'
-                  ? 'bg-[#F5B82E] text-black shadow-lg shadow-[#F5B82E]/20'
-                  : 'bg-[#181818] hover:bg-[#222222] text-[#E5E5E5] border border-[#2E2E2E] hover:border-[#404040]'
+                  ? 'bg-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/20 hover:bg-[#C5A028]'
+                  : 'bg-[#181818] hover:bg-[#202020] text-[#E5E5E5] border border-[#27272A] hover:border-[#3F3F46]'
               }`}
               title={curatorMode === 'swipe' ? 'Switch to gallery grid view' : 'Switch to Swipe Deck: drag card right to select, left to pass'}
             >
-              <Sparkles className={`w-4 h-4 ${curatorMode === 'swipe' ? 'text-black' : 'text-[#F5B82E]'}`} />
+              <Sparkles className={`w-4 h-4 ${curatorMode === 'swipe' ? 'text-black' : 'text-[#D4AF37]'}`} />
               <span>{curatorMode === 'swipe' ? 'Gallery Grid' : 'Swipe Curator'}</span>
               <span
                 className={`text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full font-mono ${
-                  curatorMode === 'swipe' ? 'bg-black/15 text-black font-bold' : 'bg-[#282828] text-[#F5B82E]'
+                  curatorMode === 'swipe' ? 'bg-black/15 text-black font-bold' : 'bg-[#27272A] text-[#D4AF37]'
                 }`}
               >
                 Deck
@@ -363,10 +363,10 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
             <button
               type="button"
               onClick={onOpenProjectChat}
-              className="inline-flex items-center gap-2 px-4 py-2.5 text-xs text-[#8C8C8C] hover:text-white bg-[#141414] hover:bg-[#1C1C1C] border border-[#242424] rounded-xl transition-colors min-h-[44px]"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-xs text-[#A1A1AA] hover:text-white bg-[#141414] hover:bg-[#181818] border border-[#27272A] rounded-xl transition-colors min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
               title="Open conversation with your studio photographer"
             >
-              <MessageCircle className="w-4 h-4 text-[#F5B82E]" />
+              <MessageCircle className="w-4 h-4 text-[#D4AF37]" />
               <span className="font-medium">Studio Chat</span>
             </button>
 
@@ -375,13 +375,13 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
                 type="button"
                 onClick={() => setIsSubmitModalOpen(true)}
                 disabled={selectedAssets.length === 0}
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-black bg-[#F5B82E] hover:bg-[#E2A622] disabled:opacity-40 rounded-xl transition-all shadow-md hover:scale-[1.01] active:scale-[0.99] min-h-[44px]"
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-black bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-40 rounded-xl transition-all shadow-md hover:scale-[1.01] active:scale-[0.99] min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
               >
                 <span>Submit Selections ({selectedAssets.length})</span>
               </button>
             ) : (
-              <div className="px-4 py-2.5 bg-[#141414] border border-[#242424] rounded-xl text-xs text-white font-medium flex items-center gap-2 min-h-[44px]">
-                <Check className="w-4 h-4 text-[#F5B82E]" />
+              <div className="px-4 py-2.5 bg-[#141414] border border-[#27272A] rounded-xl text-xs text-white font-medium flex items-center gap-2 min-h-[44px]">
+                <Check className="w-4 h-4 text-[#D4AF37]" />
                 <span>Album Locked in Production</span>
               </div>
             )}
@@ -391,8 +391,8 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
 
       {/* Quota Toast Alert */}
       {quotaToast && (
-        <div className="p-4 bg-[#141414] border border-[#F5B82E]/50 rounded-xl text-xs sm:text-sm text-[#F5B82E] flex items-center gap-3 transition-all shadow-lg animate-in fade-in">
-          <AlertCircle className="w-4 h-4 shrink-0 text-[#F5B82E]" />
+        <div className="p-4 bg-[#141414] border border-[#D4AF37]/50 rounded-xl text-xs sm:text-sm text-[#D4AF37] flex items-center gap-3 transition-all shadow-lg animate-in fade-in">
+          <AlertCircle className="w-4 h-4 shrink-0 text-[#D4AF37]" />
           <span>{quotaToast}</span>
         </div>
       )}
@@ -418,7 +418,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
                 onClick={() => setActiveCategory(folder.id)}
                 className={`group inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-medium transition-all min-h-[42px] ${
                   isActive
-                    ? 'bg-[#F5B82E] text-black shadow-lg font-semibold'
+                    ? 'bg-[#D4AF37] text-black shadow-lg font-semibold'
                     : 'bg-[#121212] hover:bg-[#181818] border border-[#242424] text-[#8C8C8C] hover:text-white'
                 }`}
               >
@@ -458,7 +458,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
                 setActiveCategory('all');
                 setSelectionFilter('all');
               }}
-              className="text-xs text-[#F5B82E] hover:underline px-3 py-2 flex items-center gap-1.5 bg-[#121212] border border-[#242424] rounded-lg min-h-[40px]"
+              className="text-xs text-[#D4AF37] hover:underline px-3 py-2 flex items-center gap-1.5 bg-[#121212] border border-[#242424] rounded-lg min-h-[40px]"
             >
               <X className="w-3.5 h-3.5" />
               <span>Reset</span>
@@ -511,8 +511,8 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
             onClick={() => setCuratorMode('swipe')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all min-h-[32px] ${
               curatorMode === 'swipe'
-                ? 'bg-[#F5B82E] text-black font-bold shadow-md'
-                : 'text-[#8C8C8C] hover:text-[#F5B82E]'
+                ? 'bg-[#D4AF37] text-black font-bold shadow-md'
+                : 'text-[#8C8C8C] hover:text-[#D4AF37]'
             }`}
             title="Swipeable Curator Mode: drag card right to select, left to pass"
           >
@@ -520,7 +520,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
             <span>Swipe Deck</span>
             <span
               className={`text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full font-mono ${
-                curatorMode === 'swipe' ? 'bg-black/15 text-black' : 'bg-[#1C1C1C] text-[#F5B82E]'
+                curatorMode === 'swipe' ? 'bg-black/15 text-black' : 'bg-[#1C1C1C] text-[#D4AF37]'
               }`}
             >
               Swipeable
@@ -552,7 +552,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
               setActiveCategory('all');
               setSelectionFilter('all');
             }}
-            className="mt-2 px-4 py-2 text-xs text-[#F5B82E] bg-[#1A1A1A] hover:bg-[#222222] border border-[#292929] rounded-lg transition-colors"
+            className="mt-2 px-4 py-2 text-xs text-[#D4AF37] bg-[#1A1A1A] hover:bg-[#222222] border border-[#292929] rounded-lg transition-colors"
           >
             Show All Photographs
           </button>
@@ -570,12 +570,12 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
                 onClick={() => onOpenPhotoDetail(asset)}
                 className={`group relative bg-[#121212] border rounded-xl overflow-hidden transition-all duration-300 cursor-pointer shadow-md hover:shadow-2xl hover:border-[#383838] ${
                   asset.isSelected
-                    ? 'border-[#F5B82E] ring-2 ring-[#F5B82E]/40 shadow-xl'
+                    ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/40 shadow-xl'
                     : 'border-[#242424]'
                 }`}
               >
                 {/* Photo Image Aspect Container */}
-                <div className="aspect-[4/3] bg-[#080808] relative overflow-hidden">
+                <div className="aspect-[4/3] bg-[#0A0A0A] relative overflow-hidden">
                   <img
                     src={asset.previewUrl}
                     alt={asset.baseFilename}
@@ -585,7 +585,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
                   />
 
                   {/* Gradient Hover Vignette */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                   {/* Top-Right Touch Selection Indicator Button */}
                   <button
@@ -594,7 +594,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
                     disabled={isLocked}
                     className={`absolute top-3 right-3 z-10 w-9 h-9 rounded-full flex items-center justify-center transition-all ${
                       asset.isSelected
-                        ? 'bg-[#F5B82E] text-black shadow-lg scale-105'
+                        ? 'bg-[#D4AF37] text-black shadow-lg scale-105'
                         : 'bg-black/60 hover:bg-black/80 text-white/80 hover:text-white backdrop-blur-sm border border-white/20'
                     }`}
                     aria-label={asset.isSelected ? 'Deselect photo' : 'Select photo for album'}
@@ -606,7 +606,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
 
                   {/* Bottom-left comment notes indicator */}
                   {assetComments.length > 0 && (
-                    <div className="absolute bottom-3 left-3 px-2.5 py-1 bg-black/80 backdrop-blur-sm text-[#F5B82E] text-[11px] font-medium rounded-md flex items-center gap-1.5 shadow">
+                    <div className="absolute bottom-3 left-3 px-2.5 py-1 bg-black/80 backdrop-blur-sm text-[#D4AF37] text-[11px] font-medium rounded-md flex items-center gap-1.5 shadow">
                       <MessageSquare className="w-3.5 h-3.5" />
                       <span>{assetComments.length}</span>
                     </div>
@@ -638,14 +638,14 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
         >
           <div className="bg-[#121212] border border-[#242424] rounded-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl">
             <div className="border-b border-[#242424] pb-4 space-y-1">
-              <span className="text-[11px] uppercase tracking-[0.2em] text-[#F5B82E] font-medium block">
+              <span className="text-[11px] uppercase tracking-[0.2em] text-[#D4AF37] font-medium block">
                 Signature Proofing Finalization
               </span>
               <h3 id="submit-dialog-title" className="text-2xl font-editorial font-medium text-white">
                 Submit Heirloom Album Selections
               </h3>
               <p className="text-xs text-[#8C8C8C] font-sans pt-1">
-                You have curated <strong className="text-[#F5B82E]">{selectedAssets.length}</strong> of your{' '}
+                You have curated <strong className="text-[#D4AF37]">{selectedAssets.length}</strong> of your{' '}
                 <strong className="text-white">{project.selectionLimit}</strong> package images.
               </p>
             </div>
@@ -665,7 +665,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
                 placeholder="e.g. Please feature the outdoor twilight portraits on the front cover and first double spread..."
                 value={submissionNote}
                 onChange={(e) => setSubmissionNote(e.target.value)}
-                className="w-full px-4 py-3 bg-[#080808] border border-[#242424] rounded-xl text-xs text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#F5B82E] transition-colors"
+                className="w-full px-4 py-3 bg-[#080808] border border-[#242424] rounded-xl text-xs text-white placeholder-[#8C8C8C] focus:outline-none focus:border-[#D4AF37] transition-colors"
               />
             </div>
 
@@ -682,7 +682,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
                 type="button"
                 onClick={handleFinalSubmit}
                 disabled={isSubmitting}
-                className="px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-black bg-[#F5B82E] hover:bg-[#E2A622] disabled:opacity-50 rounded-xl transition-all shadow-md min-h-[40px]"
+                className="px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-black bg-[#D4AF37] hover:bg-[#C5A028] disabled:opacity-50 rounded-xl transition-all shadow-md min-h-[40px]"
               >
                 {isSubmitting ? 'Submitting to Studio...' : 'Confirm & Finalize Selections'}
               </button>

@@ -87,7 +87,7 @@ export const ClientOnboardingSequence: React.FC<ClientOnboardingSequenceProps> =
             <div className="w-full max-w-[240px] space-y-2">
               <div className="w-full bg-[#1A1A1A] h-1 rounded-full overflow-hidden border border-[#242424]">
                 <motion.div
-                  className="bg-[#F5B82E] h-full"
+                  className="bg-[#D4AF37] h-full"
                   initial={{ width: '12%' }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.15, ease: 'easeOut' }}
@@ -112,9 +112,9 @@ export const ClientOnboardingSequence: React.FC<ClientOnboardingSequenceProps> =
               initial={{ opacity: 0, filter: 'blur(12px)', y: -10 }}
               animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121212] border border-[#242424] text-[11px] uppercase tracking-[0.25em] text-[#F5B82E] font-medium"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121212] border border-[#242424] text-[11px] uppercase tracking-[0.25em] text-[#D4AF37] font-medium"
             >
-              <Sparkles className="w-3 h-3 text-[#F5B82E]" />
+              <Sparkles className="w-3 h-3 text-[#D4AF37]" />
               <span>Private Proofing Collection</span>
             </motion.div>
 
@@ -164,7 +164,7 @@ export const ClientOnboardingSequence: React.FC<ClientOnboardingSequenceProps> =
               <button
                 type="button"
                 onClick={onComplete}
-                className="group inline-flex items-center gap-2.5 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-black bg-[#F5B82E] hover:bg-[#E2A622] rounded-full transition-all shadow-xl hover:shadow-[#F5B82E]/20 hover:scale-105 active:scale-95"
+                className="group inline-flex items-center gap-2.5 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-full transition-all shadow-xl hover:shadow-[#D4AF37]/20 hover:scale-105 active:scale-95"
               >
                 <span>Enter Gallery Grid</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

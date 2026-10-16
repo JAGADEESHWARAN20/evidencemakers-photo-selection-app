@@ -57,11 +57,11 @@ export const IconStudioOverview: React.FC<IconProps> = ({ className = '', size =
       cx="17"
       cy="17"
       r="4"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.6"
       className="transition-transform duration-500 group-hover:rotate-90 origin-center"
     />
-    <circle cx="17" cy="17" r="1.5" fill="#F5B82E" />
+    <circle cx="17" cy="17" r="1.5" fill="#D4AF37" />
   </svg>
 );
 
@@ -92,7 +92,7 @@ export const IconProjectsFolio: React.FC<IconProps> = ({ className = '', size = 
     />
     <path
       d="M10 3.5V11L12.5 9.5L15 11V3.5"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -117,38 +117,38 @@ export const IconRawAperture: React.FC<IconProps> = ({ className = '', size = 20
     <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
     <path
       d="M12 3L16.5 10.5"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.5"
       strokeLinecap="round"
       className="transition-all duration-300"
     />
     <path
       d="M19.8 7.5L16.5 15"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.5"
       strokeLinecap="round"
     />
     <path
       d="M19.8 16.5L12 16.5"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.5"
       strokeLinecap="round"
     />
     <path
       d="M12 21L7.5 13.5"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.5"
       strokeLinecap="round"
     />
     <path
       d="M4.2 16.5L7.5 9"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.5"
       strokeLinecap="round"
     />
     <path
       d="M4.2 7.5L12 7.5"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.5"
       strokeLinecap="round"
     />
@@ -193,7 +193,7 @@ export const IconAlbumSelection: React.FC<IconProps> = ({ className = '', size =
       width="5"
       height="9"
       rx="1"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.4"
       className="transition-all duration-300 group-hover:stroke-width-2"
     />
@@ -218,9 +218,9 @@ export const IconShareCompass: React.FC<IconProps> = ({ className = '', size = 1
     xmlns="http://www.w3.org/2000/svg"
     className={`transition-transform duration-300 group-hover:scale-110 ${className}`}
   >
-    <circle cx="18" cy="5" r="3" stroke="#F5B82E" strokeWidth="1.6" />
+    <circle cx="18" cy="5" r="3" stroke="#D4AF37" strokeWidth="1.6" />
     <circle cx="6" cy="12" r="3" stroke="currentColor" strokeWidth="1.6" />
-    <circle cx="18" cy="19" r="3" stroke="#F5B82E" strokeWidth="1.6" />
+    <circle cx="18" cy="19" r="3" stroke="#D4AF37" strokeWidth="1.6" />
     <line
       x1="8.6"
       y1="10.7"
@@ -254,11 +254,11 @@ export const IconMonogramKey: React.FC<IconProps> = ({ className = '', size = 20
     xmlns="http://www.w3.org/2000/svg"
     className={`transition-transform duration-300 ${className}`}
   >
-    <circle cx="7.5" cy="15.5" r="4.5" stroke="#F5B82E" strokeWidth="1.6" />
-    <circle cx="7.5" cy="15.5" r="1.5" fill="#F5B82E" />
+    <circle cx="7.5" cy="15.5" r="4.5" stroke="#D4AF37" strokeWidth="1.6" />
+    <circle cx="7.5" cy="15.5" r="1.5" fill="#D4AF37" />
     <path
       d="M10.8 12.2L19.5 3.5M16 4.5L18.5 7M18 6.5L20.5 9"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.6"
       strokeLinecap="round"
     />
@@ -346,7 +346,7 @@ export const IconShareEmail: React.FC<IconProps> = ({ className = '', size = 18 
     <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.6" />
     <path
       d="M3 7L12 13L21 7"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.6"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -374,7 +374,7 @@ export const IconCopyLink: React.FC<IconProps> = ({ className = '', size = 18 })
     />
     <path
       d="M14 11C13.55 10.43 12.96 9.97 12.29 9.67C11.62 9.37 10.88 9.23 10.14 9.27C9.4 9.31 8.68 9.53 8.05 9.9C7.42 10.27 6.89 10.78 6.5 11.4L4.5 14.6C3.79 15.76 3.72 17.22 4.31 18.44C4.9 19.66 6.08 20.5 7.4 20.66C8.72 20.82 10.02 20.27 10.83 19.21L12 17.5"
-      stroke="#F5B82E"
+      stroke="#D4AF37"
       strokeWidth="1.6"
       strokeLinecap="round"
     />

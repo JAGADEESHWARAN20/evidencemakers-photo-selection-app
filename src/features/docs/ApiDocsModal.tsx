@@ -89,13 +89,13 @@ Please provide the following backend specifications to wire the Evidence Makers 
         </div>
 
         {/* Overview banner */}
-        <div className="p-4 bg-[#080808] border border-[#F5B82E]/30 rounded-lg space-y-2">
-          <div className="flex items-center gap-2 text-xs font-semibold text-[#F5B82E] uppercase tracking-wider">
+        <div className="p-4 bg-[#080808] border border-[#D4AF37]/30 rounded-lg space-y-2">
+          <div className="flex items-center gap-2 text-xs font-semibold text-[#D4AF37] uppercase tracking-wider">
             <Server className="w-4 h-4" />
             <span>Clean Architecture &amp; Service Layer Established</span>
           </div>
           <p className="text-xs text-white/90 leading-relaxed">
-            The frontend application structure, admin dashboard, RAW/JPEG pairing engine, package-guided client proofing portal, and contextual picture-chat are completely operational using isolated, persistent service adapters in <code className="text-[#F5B82E]">src/services/</code>.
+            The frontend application structure, admin dashboard, RAW/JPEG pairing engine, package-guided client proofing portal, and contextual picture-chat are completely operational using isolated, persistent service adapters in <code className="text-[#D4AF37]">src/services/</code>.
           </p>
         </div>
 
@@ -105,7 +105,7 @@ Please provide the following backend specifications to wire the Evidence Makers 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div className="p-3 bg-[#080808] border border-[#242424] rounded-md space-y-1">
               <div className="flex items-center gap-1.5 text-white font-medium">
-                <Database className="w-3.5 h-3.5 text-[#F5B82E]" />
+                <Database className="w-3.5 h-3.5 text-[#D4AF37]" />
                 <span>Project &amp; Selection Services</span>
               </div>
               <p className="text-[#8C8C8C] text-[11px]">
@@ -115,7 +115,7 @@ Please provide the following backend specifications to wire the Evidence Makers 
 
             <div className="p-3 bg-[#080808] border border-[#242424] rounded-md space-y-1">
               <div className="flex items-center gap-1.5 text-white font-medium">
-                <UploadCloud className="w-3.5 h-3.5 text-[#F5B82E]" />
+                <UploadCloud className="w-3.5 h-3.5 text-[#D4AF37]" />
                 <span>Direct Storage Adapter</span>
               </div>
               <p className="text-[#8C8C8C] text-[11px]">
@@ -125,7 +125,7 @@ Please provide the following backend specifications to wire the Evidence Makers 
 
             <div className="p-3 bg-[#080808] border border-[#242424] rounded-md space-y-1">
               <div className="flex items-center gap-1.5 text-white font-medium">
-                <MessageSquare className="w-3.5 h-3.5 text-[#F5B82E]" />
+                <MessageSquare className="w-3.5 h-3.5 text-[#D4AF37]" />
                 <span>Picture-Chat Interface</span>
               </div>
               <p className="text-[#8C8C8C] text-[11px]">
@@ -135,7 +135,7 @@ Please provide the following backend specifications to wire the Evidence Makers 
 
             <div className="p-3 bg-[#080808] border border-[#242424] rounded-md space-y-1">
               <div className="flex items-center gap-1.5 text-white font-medium">
-                <Shield className="w-3.5 h-3.5 text-[#F5B82E]" />
+                <Shield className="w-3.5 h-3.5 text-[#D4AF37]" />
                 <span>Security &amp; PIN Gateway</span>
               </div>
               <p className="text-[#8C8C8C] text-[11px]">
@@ -153,7 +153,7 @@ Please provide the following backend specifications to wire the Evidence Makers 
             </span>
             <button
               onClick={handleCopy}
-              className="inline-flex items-center gap-1 text-xs text-[#F5B82E] hover:underline"
+              className="inline-flex items-center gap-1 text-xs text-[#D4AF37] hover:underline"
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copied ? 'Copied to Clipboard' : 'Copy Questionnaire'}</span>
@@ -167,7 +167,7 @@ Please provide the following backend specifications to wire the Evidence Makers 
         <div className="flex justify-end pt-3 border-t border-[#242424]">
           <button
             onClick={onClose}
-            className="px-5 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#F5B82E] hover:bg-[#E2A622] rounded-md transition-colors"
+            className="px-5 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-md transition-colors"
           >
             Close
           </button>

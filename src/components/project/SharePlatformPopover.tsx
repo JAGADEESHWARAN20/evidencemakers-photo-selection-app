@@ -48,14 +48,26 @@ export const SharePlatformPopover: React.FC<SharePlatformPopoverProps> = ({
   const handleWhatsApp = (e: React.MouseEvent) => {
     e.stopPropagation();
     const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-    window.open(waUrl, '_blank', 'noopener,noreferrer');
+    const link = document.createElement('a');
+    link.href = waUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     onClose();
   };
 
   const handleFacebook = (e: React.MouseEvent) => {
     e.stopPropagation();
     const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(portalUrl)}`;
-    window.open(fbUrl, '_blank', 'noopener,noreferrer');
+    const link = document.createElement('a');
+    link.href = fbUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     onClose();
   };
 
@@ -86,7 +98,7 @@ export const SharePlatformPopover: React.FC<SharePlatformPopoverProps> = ({
       <div className="space-y-3">
         {/* Header summary */}
         <div className="border-b border-[#242424] pb-2.5 px-1 flex items-center justify-between">
-          <span className="text-[11px] uppercase tracking-widest text-[#F5B82E] font-semibold">
+          <span className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-semibold">
             Quick Share Gallery
           </span>
           {project.sharePin && (
@@ -142,8 +154,8 @@ export const SharePlatformPopover: React.FC<SharePlatformPopoverProps> = ({
               <span className="font-medium">Copy for Instagram Stories</span>
             </div>
             {copiedType === 'instagram' ? (
-              <span className="text-[10px] text-[#F5B82E] font-medium flex items-center gap-1">
-                <Check className="w-3 h-3 text-[#F5B82E]" />
+              <span className="text-[10px] text-[#D4AF37] font-medium flex items-center gap-1">
+                <Check className="w-3 h-3 text-[#D4AF37]" />
                 Copied
               </span>
             ) : (
@@ -158,7 +170,7 @@ export const SharePlatformPopover: React.FC<SharePlatformPopoverProps> = ({
             className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs text-[#E5E5E5] hover:text-white hover:bg-[#181818] transition-colors group"
           >
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-full bg-[#F5B82E]/15 border border-[#F5B82E]/30 flex items-center justify-center text-[#F5B82E] group-hover:scale-105 transition-transform">
+              <div className="w-7 h-7 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] group-hover:scale-105 transition-transform">
                 <IconShareEmail size={15} />
               </div>
               <span className="font-medium">Email Client Invitation</span>
@@ -175,12 +187,12 @@ export const SharePlatformPopover: React.FC<SharePlatformPopoverProps> = ({
               e.stopPropagation();
               handleCopy(portalUrl, 'direct_link');
             }}
-            className="w-full py-2.5 px-3 bg-[#080808] hover:bg-[#161616] border border-[#2D2D2D] hover:border-[#F5B82E] rounded-lg text-xs text-white font-medium flex items-center justify-center gap-2 transition-all shadow-inner"
+            className="w-full py-2.5 px-3 bg-[#080808] hover:bg-[#161616] border border-[#2D2D2D] hover:border-[#D4AF37] rounded-lg text-xs text-white font-medium flex items-center justify-center gap-2 transition-all shadow-inner"
           >
             {copiedType === 'direct_link' ? (
               <>
-                <Check className="w-3.5 h-3.5 text-[#F5B82E]" />
-                <span className="text-[#F5B82E] font-semibold">Direct Share Link Copied!</span>
+                <Check className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span className="text-[#D4AF37] font-semibold">Direct Share Link Copied!</span>
               </>
             ) : (
               <>

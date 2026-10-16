@@ -84,11 +84,11 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       >
         <path
           d="M 50 8 A 42 42 0 1 0 88 65 L 78 58 A 32 32 0 1 1 50 18 Z"
-          fill="#F5B82E"
+          fill="#D4AF37"
         />
         <path
           d="M 45 4 C 65 4, 82 15, 88 28 C 78 20, 62 14, 45 14 Z"
-          fill="#FCD86B"
+          fill="#E5C158"
         />
       </svg>
       {variant !== 'mark-only' && (
@@ -96,7 +96,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           <span className="font-editorial text-lg tracking-[0.16em] text-white font-semibold uppercase">
             Evidence Makers
           </span>
-          <span className="text-[9px] tracking-[0.24em] text-[#8C8C8C] uppercase font-sans mt-0.5">
+          <span className="text-[9px] tracking-[0.24em] text-[#A1A1AA] uppercase font-sans mt-0.5">
             Studio Proofing
           </span>
         </div>

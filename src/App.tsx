@@ -20,7 +20,7 @@ import { ProjectChatDrawer } from './features/chat/ProjectChatDrawer.tsx';
 import { ApiDocsModal } from './features/docs/ApiDocsModal.tsx';
 import { CreateProjectDTO } from './services/project-service.ts';
 import { BrandLogo } from './components/brand/BrandLogo.tsx';
-import { ArrowLeft, Shield } from 'lucide-react';
+import { ArrowLeft, Shield, AlertCircle, CheckCircle2, X } from 'lucide-react';
 
 const getInitialPortalToken = () => {
   if (typeof window === 'undefined') return null;
@@ -53,6 +53,14 @@ export default function App() {
   const [isApiDocsModalOpen, setIsApiDocsModalOpen] = useState(false);
   const [isProjectChatOpen, setIsProjectChatOpen] = useState(false);
   const [lightboxAsset, setLightboxAsset] = useState<GalleryAsset | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' | 'info' } | null>(null);
+
+  const showToast = (message: string, type: 'error' | 'success' | 'info' = 'info') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast((prev) => (prev?.message === message ? null : prev));
+    }, 4000);
+  };
 
   // Fetch initial data & route triage
   const refreshData = async () => {
@@ -162,14 +170,14 @@ export default function App() {
         });
       }
     } catch (err: any) {
-      alert(err.message);
+      showToast(err.message || 'Unable to update photo selection', 'error');
     }
   };
 
   const isClientPortalMode = activeRole === 'client' || currentView === 'client_portal';
 
   return (
-    <div className="min-h-screen bg-[#080808] text-white flex flex-col font-sans selection:bg-[#F5B82E]/30">
+    <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col font-sans selection:bg-[#D4AF37]/30">
       {/* 1. Branded Preloader Initialization (Only on initial load) */}
       {!isInitialized && (
         <GalleryPreloader onComplete={() => setIsInitialized(true)} />
@@ -178,7 +186,7 @@ export default function App() {
       {/* 2. Decoupled Routing: Standalone Client Portal vs. Studio Admin Workspace */}
       {isClientPortalMode ? (
         /* Standalone Minimalist Client Portal Shell (Completely Decoupled) */
-        <div className="min-h-screen flex flex-col justify-between bg-[#080808]">
+        <div className="min-h-screen flex flex-col justify-between bg-[#0A0A0A]">
           {/* Standalone Client Workspace with Generous Padding */}
           <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 lg:px-12 py-6 sm:py-10">
             {selectedProject ? (
@@ -192,13 +200,13 @@ export default function App() {
                 onBackToStudio={handleExitClientPortal}
               />
             ) : (
-              <div className="p-16 text-center text-[#8C8C8C] bg-[#121212] border border-[#242424] rounded-2xl">
-                <Shield className="w-8 h-8 text-[#F5B82E] mx-auto mb-3" />
+              <div className="p-16 text-center text-[#A1A1AA] bg-[#121212] border border-[#27272A] rounded-2xl">
+                <Shield className="w-8 h-8 text-[#D4AF37] mx-auto mb-3" />
                 <h3 className="text-lg font-editorial text-white">Project Not Found</h3>
-                <p className="text-xs text-[#8C8C8C] mt-1">Please verify the direct client share link.</p>
+                <p className="text-xs text-[#A1A1AA] mt-1">Please verify the direct client share link.</p>
                 <button
                   onClick={handleExitClientPortal}
-                  className="mt-4 px-4 py-2 text-xs font-semibold text-black bg-[#F5B82E] rounded-lg"
+                  className="mt-4 px-4 py-2 text-xs font-semibold text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
                 >
                   Return to Dashboard
                 </button>
@@ -207,12 +215,12 @@ export default function App() {
           </main>
 
           {/* Minimalist Client Footer (Strictly photography focused, no admin noise) */}
-          <footer className="border-t border-[#1C1C1C] py-8 text-center text-xs text-[#8C8C8C] font-sans">
+          <footer className="border-t border-[#27272A] py-8 text-center text-xs text-[#A1A1AA] font-sans">
             <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <span className="text-[11px] text-[#8C8C8C]">
+              <span className="text-[11px] text-[#A1A1AA]">
                 &copy; {new Date().getFullYear()} Evidence Makers Studio. All photographs copyright protected.
               </span>
-              <span className="text-[10px] uppercase tracking-wider text-[#F5B82E] font-medium">
+              <span className="text-[10px] uppercase tracking-wider text-[#D4AF37] font-medium">
                 Heirloom Album Proofing Architecture
               </span>
             </div>
@@ -264,16 +272,16 @@ export default function App() {
                 onOpenClientPortal={handleOpenClientPortal}
               />
             ) : (
-              <div className="p-16 text-center text-[#8C8C8C] bg-[#121212] border border-[#242424] rounded-2xl">
+              <div className="p-16 text-center text-[#A1A1AA] bg-[#121212] border border-[#27272A] rounded-2xl">
                 <p>Loading project workspace...</p>
               </div>
             )}
           </main>
 
-          <footer className="border-t border-[#1C1C1C] py-8 text-center text-xs text-[#8C8C8C] font-sans">
+          <footer className="border-t border-[#27272A] py-8 text-center text-xs text-[#A1A1AA] font-sans">
             <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3">
               <span>&copy; {new Date().getFullYear()} Evidence Makers Studio. All rights reserved.</span>
-              <span className="text-[11px] text-[#8C8C8C]/80">
+              <span className="text-[11px] text-[#A1A1AA]/80">
                 Professional Wedding &amp; Event Photography Proofing Architecture
               </span>
             </div>
@@ -318,6 +326,31 @@ export default function App() {
         isOpen={isApiDocsModalOpen}
         onClose={() => setIsApiDocsModalOpen(false)}
       />
+
+      {/* Floating System Notification Toast */}
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#121212]/95 backdrop-blur-md border border-[#27272A] shadow-2xl text-xs text-white transition-all animate-in slide-in-from-bottom-3 duration-200"
+        >
+          {toast.type === 'error' ? (
+            <AlertCircle className="w-4 h-4 text-[#EF4444] shrink-0" />
+          ) : toast.type === 'success' ? (
+            <CheckCircle2 className="w-4 h-4 text-[#D4AF37] shrink-0" />
+          ) : (
+            <Shield className="w-4 h-4 text-[#D4AF37] shrink-0" />
+          )}
+          <span className="font-medium">{toast.message}</span>
+          <button
+            onClick={() => setToast(null)}
+            className="ml-2 text-[#A1A1AA] hover:text-white transition-colors"
+            aria-label="Close notification"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -35,12 +35,12 @@ export const ProjectSelectorPopover: React.FC<ProjectSelectorPopoverProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 bg-[#121212] hover:bg-[#181818] border border-[#242424] hover:border-[#333333] rounded-lg transition-colors text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F5B82E] min-h-[40px]"
+        className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 bg-[#121212] hover:bg-[#181818] border border-[#242424] hover:border-[#333333] rounded-lg transition-colors text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] min-h-[40px]"
         aria-expanded={isOpen}
         aria-haspopup="true"
         aria-label="Switch active project"
       >
-        <FolderHeart className="w-3.5 h-3.5 text-[#F5B82E] shrink-0" />
+        <FolderHeart className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
         <div className="flex flex-col min-w-0">
           <span className="text-[9px] sm:text-[10px] text-[#8C8C8C] uppercase tracking-wider font-sans leading-none">
             Active Project
@@ -91,7 +91,7 @@ export const ProjectSelectorPopover: React.FC<ProjectSelectorPopoverProps> = ({
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[11px] font-sans font-medium text-[#F5B82E]">
+                    <span className="text-[11px] font-sans font-medium text-[#D4AF37]">
                       {project.id}
                     </span>
                     <span className="text-[#333333]">·</span>
@@ -105,7 +105,7 @@ export const ProjectSelectorPopover: React.FC<ProjectSelectorPopoverProps> = ({
                 </div>
 
                 {isSelected && (
-                  <Check className="w-4 h-4 text-[#F5B82E] shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
                 )}
               </button>
             );
@@ -119,7 +119,7 @@ export const ProjectSelectorPopover: React.FC<ProjectSelectorPopoverProps> = ({
               setIsOpen(false);
               onOpenNewProject();
             }}
-            className="w-full flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-semibold text-black bg-[#F5B82E] hover:bg-[#E2A622] rounded-md transition-colors min-h-[40px]"
+            className="w-full flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-semibold text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-md transition-colors min-h-[40px]"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Create New Project</span>

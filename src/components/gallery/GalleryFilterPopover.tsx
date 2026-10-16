@@ -52,14 +52,14 @@ export const GalleryFilterPopover: React.FC<GalleryFilterPopoverProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 bg-[#121212] hover:bg-[#181818] border border-[#242424] hover:border-[#333333] rounded-lg text-xs font-medium text-white transition-colors min-h-[44px]"
+        className="flex items-center gap-2 px-3 py-2 bg-[#121212] hover:bg-[#181818] border border-[#27272A] hover:border-[#3F3F46] rounded-lg text-xs font-medium text-white transition-colors min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
         aria-expanded={isOpen}
         aria-label="Filter photos popover"
       >
-        <SlidersHorizontal className="w-3.5 h-3.5 text-[#F5B82E]" />
+        <SlidersHorizontal className="w-3.5 h-3.5 text-[#D4AF37]" />
         <span className="truncate max-w-[130px]">{activeCategoryLabel}</span>
         <ChevronDown
-          className={`w-3.5 h-3.5 text-[#8C8C8C] transition-transform duration-200 ${
+          className={`w-3.5 h-3.5 text-[#A1A1AA] transition-transform duration-200 ${
             isOpen ? 'rotate-180 text-white' : ''
           }`}
         />
@@ -73,7 +73,7 @@ export const GalleryFilterPopover: React.FC<GalleryFilterPopoverProps> = ({
       >
         {/* Category Section */}
         <div>
-          <span className="text-[10px] font-semibold text-[#8C8C8C] uppercase tracking-wider block mb-1.5">
+          <span className="text-[10px] font-semibold text-[#A1A1AA] uppercase tracking-wider block mb-1.5">
             Event Section / Category
           </span>
           <div className="space-y-1">
@@ -85,22 +85,22 @@ export const GalleryFilterPopover: React.FC<GalleryFilterPopoverProps> = ({
                   onSelectCategory(cat.id);
                   setIsOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-md transition-colors min-h-[36px] ${
+                className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-md transition-colors min-h-[36px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] ${
                   activeCategory === cat.id
-                    ? 'bg-[#181818] text-[#F5B82E] font-medium'
-                    : 'text-[#8C8C8C] hover:text-white hover:bg-[#181818]/50'
+                    ? 'bg-[#181818] text-[#D4AF37] font-medium'
+                    : 'text-[#A1A1AA] hover:text-white hover:bg-[#181818]/50'
                 }`}
               >
                 <span>{cat.label}</span>
-                {activeCategory === cat.id && <Check className="w-3.5 h-3.5 text-[#F5B82E]" />}
+                {activeCategory === cat.id && <Check className="w-3.5 h-3.5 text-[#D4AF37]" />}
               </button>
             ))}
           </div>
         </div>
 
         {/* Selection Status Section */}
-        <div className="pt-2 border-t border-[#242424]">
-          <span className="text-[10px] font-semibold text-[#8C8C8C] uppercase tracking-wider block mb-1.5">
+        <div className="pt-2 border-t border-[#27272A]">
+          <span className="text-[10px] font-semibold text-[#A1A1AA] uppercase tracking-wider block mb-1.5">
             Selection Status
           </span>
           <div className="space-y-1">
@@ -112,10 +112,10 @@ export const GalleryFilterPopover: React.FC<GalleryFilterPopoverProps> = ({
                   onSelectSelectionFilter(sf.id);
                   setIsOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-md transition-colors min-h-[36px] ${
+                className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-md transition-colors min-h-[36px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] ${
                   selectionFilter === sf.id
-                    ? 'bg-[#F5B82E] text-black font-semibold'
-                    : 'text-[#8C8C8C] hover:text-white hover:bg-[#181818]/50'
+                    ? 'bg-[#D4AF37] text-black font-semibold'
+                    : 'text-[#A1A1AA] hover:text-white hover:bg-[#181818]/50'
                 }`}
               >
                 <span>{sf.label}</span>

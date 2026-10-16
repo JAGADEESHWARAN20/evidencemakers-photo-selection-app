@@ -205,7 +205,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
   if (!currentAsset || assets.length === 0) {
     return (
       <div className="p-12 sm:p-16 text-center text-[#8C8C8C] bg-[#101010] border border-[#242424] rounded-2xl space-y-4">
-        <Sparkles className="w-10 h-10 text-[#F5B82E] mx-auto opacity-70" />
+        <Sparkles className="w-10 h-10 text-[#D4AF37] mx-auto opacity-70" />
         <h3 className="text-xl font-editorial text-white">No photographs in this collection</h3>
         <p className="text-xs sm:text-sm text-[#8C8C8C] max-w-sm mx-auto">
           Try switching to another folder or clearing active filters to view photos.
@@ -214,7 +214,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
           <button
             type="button"
             onClick={onSwitchToGrid}
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-black bg-[#F5B82E] hover:bg-[#E2A622] rounded-xl transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-xl transition-all"
           >
             <LayoutGrid className="w-4 h-4" />
             <span>Return to Gallery Grid</span>
@@ -227,8 +227,8 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
   // Completion Screen when deck is fully reviewed
   if (isFinished) {
     return (
-      <div className="max-w-2xl mx-auto p-8 sm:p-12 bg-[#121212] border border-[#F5B82E]/40 rounded-3xl text-center space-y-6 shadow-2xl animate-in fade-in">
-        <div className="w-16 h-16 rounded-full bg-[#F5B82E]/10 border border-[#F5B82E]/30 flex items-center justify-center mx-auto text-[#F5B82E]">
+      <div className="max-w-2xl mx-auto p-8 sm:p-12 bg-[#121212] border border-[#D4AF37]/40 rounded-3xl text-center space-y-6 shadow-2xl animate-in fade-in">
+        <div className="w-16 h-16 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center mx-auto text-[#D4AF37]">
           <CheckCircle2 className="w-8 h-8" />
         </div>
 
@@ -243,7 +243,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
 
         <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-[#181818] border border-[#2A2A2A]">
           <span className="text-xs text-[#8C8C8C] uppercase tracking-wider font-semibold">Album Status:</span>
-          <span className="text-lg font-editorial font-bold text-[#F5B82E] tabular-nums">
+          <span className="text-lg font-editorial font-bold text-[#D4AF37] tabular-nums">
             {selectedCount} / {selectionLimit} selected
           </span>
         </div>
@@ -255,7 +255,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
             disabled={history.length === 0}
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1C1C1C] hover:bg-[#252525] border border-[#333333] text-xs font-medium text-white transition-all"
           >
-            <RotateCcw className="w-4 h-4 text-[#F5B82E]" />
+            <RotateCcw className="w-4 h-4 text-[#D4AF37]" />
             <span>Undo Last Action</span>
           </button>
 
@@ -275,7 +275,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
             <button
               type="button"
               onClick={onSwitchToGrid}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F5B82E] hover:bg-[#E2A622] text-black font-semibold text-xs transition-all shadow-lg"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#C5A028] text-black font-semibold text-xs transition-all shadow-lg"
             >
               <LayoutGrid className="w-4 h-4" />
               <span>View Full Gallery Grid</span>
@@ -294,9 +294,9 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-4 px-1 sm:px-2">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#181818] border border-[#282828] text-xs text-[#E5E5E5] shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-[#F5B82E] animate-pulse" />
+            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] animate-pulse" />
             <span className="font-semibold tracking-wide">Swipe Curator</span>
-            <span className="text-[10px] text-[#F5B82E] font-mono px-1.5 py-0.2 bg-[#F5B82E]/10 rounded">
+            <span className="text-[10px] text-[#D4AF37] font-mono px-1.5 py-0.2 bg-[#D4AF37]/10 rounded">
               Mobile &amp; Desktop
             </span>
           </div>
@@ -308,7 +308,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
           <button
             type="button"
             onClick={() => setShowShortcuts(!showShortcuts)}
-            className="text-[11px] text-[#8C8C8C] hover:text-[#F5B82E] flex items-center gap-1 transition-colors underline decoration-dotted"
+            className="text-[11px] text-[#8C8C8C] hover:text-[#D4AF37] flex items-center gap-1 transition-colors underline decoration-dotted"
             title="View keyboard and touch shortcuts"
           >
             <HelpCircle className="w-3.5 h-3.5" />
@@ -321,11 +321,11 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
             <span className="px-2 py-0.5 rounded bg-[#1A1A1A] border border-[#2A2A2A] text-[11px] font-mono">
               &larr; Swipe Left to Pass
             </span>
-            <span className="px-2 py-0.5 rounded bg-[#F5B82E]/10 border border-[#F5B82E]/20 text-[#F5B82E] text-[11px] font-mono font-medium">
+            <span className="px-2 py-0.5 rounded bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] text-[11px] font-mono font-medium">
               Swipe Right to Select &rarr;
             </span>
           </div>
-          <span className="font-mono text-[#F5B82E] font-semibold bg-[#121212] border border-[#262626] px-3 py-1 rounded-md shadow-inner">
+          <span className="font-mono text-[#D4AF37] font-semibold bg-[#121212] border border-[#262626] px-3 py-1 rounded-md shadow-inner">
             {selectedCount} / {selectionLimit} selected
           </span>
         </div>
@@ -340,7 +340,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
           className="p-4 bg-[#141414] border border-[#282828] rounded-xl text-xs text-[#A3A3A3] grid grid-cols-2 sm:grid-cols-4 gap-3 shadow-lg"
         >
           <div>
-            <strong className="text-[#F5B82E] block font-mono">Swipe Right / &rarr;</strong>
+            <strong className="text-[#D4AF37] block font-mono">Swipe Right / &rarr;</strong>
             <span>Select &amp; keep for album</span>
           </div>
           <div>
@@ -418,14 +418,14 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
             transition={{ type: 'spring', stiffness: 380, damping: 28 }}
             className={`relative z-20 w-full h-full bg-[#121212] border-2 rounded-2xl overflow-hidden shadow-2xl cursor-grab active:cursor-grabbing ${
               currentAsset.isSelected
-                ? 'border-[#F5B82E] ring-4 ring-[#F5B82E]/25 shadow-[#F5B82E]/15'
-                : 'border-[#292929] hover:border-[#383838]'
+                ? 'border-[#D4AF37] ring-4 ring-[#D4AF37]/25 shadow-[#D4AF37]/15'
+                : 'border-[#27272A] hover:border-[#3F3F46]'
             }`}
           >
             {/* Visual Drag Stamp: SELECT FOR ALBUM (Gold, Left Top) - appears dynamically on swipe right */}
             <motion.div
               style={{ opacity: opacitySelectBadge }}
-              className="absolute top-6 left-6 z-30 px-4 py-2 border-2 border-[#F5B82E] bg-black/90 backdrop-blur-md rounded-xl text-[#F5B82E] font-bold text-xs sm:text-sm tracking-widest uppercase transform -rotate-12 shadow-2xl pointer-events-none flex items-center gap-2"
+              className="absolute top-6 left-6 z-30 px-4 py-2 border-2 border-[#D4AF37] bg-black/90 backdrop-blur-md rounded-xl text-[#D4AF37] font-bold text-xs sm:text-sm tracking-widest uppercase transform -rotate-12 shadow-2xl pointer-events-none flex items-center gap-2"
             >
               <Check className="w-5 h-5 stroke-[3.5]" />
               <span>SELECT FOR ALBUM</span>
@@ -441,7 +441,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
             </motion.div>
 
             {/* High-Resolution Photo Image Container */}
-            <div className="w-full h-[calc(100%-84px)] bg-[#080808] relative overflow-hidden flex items-center justify-center">
+            <div className="w-full h-[calc(100%-84px)] bg-[#0A0A0A] relative overflow-hidden flex items-center justify-center">
               <img
                 src={currentAsset.previewUrl}
                 alt={currentAsset.baseFilename}
@@ -457,7 +457,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
                 disabled={isSelectionLocked}
                 className={`absolute top-4 right-4 z-20 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-xl active:scale-95 ${
                   currentAsset.isSelected
-                    ? 'bg-[#F5B82E] text-black scale-105 shadow-[#F5B82E]/40'
+                    ? 'bg-[#D4AF37] text-black scale-105 shadow-[#D4AF37]/40'
                     : 'bg-black/75 hover:bg-black text-white/80 hover:text-white border border-white/20 backdrop-blur-md'
                 }`}
                 aria-label="Toggle photo selection for album"
@@ -475,7 +475,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
                 className="absolute bottom-4 right-4 z-20 p-2.5 rounded-xl bg-black/75 hover:bg-black text-white border border-white/20 backdrop-blur-md transition-all hover:scale-105 shadow-lg flex items-center gap-1.5 text-xs"
                 title="View full-resolution lightbox & retouch notes"
               >
-                <Maximize2 className="w-4 h-4 text-[#F5B82E]" />
+                <Maximize2 className="w-4 h-4 text-[#D4AF37]" />
                 <span className="hidden sm:inline font-medium">Inspect</span>
               </button>
 
@@ -483,7 +483,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
               <div className="sm:hidden absolute bottom-4 left-4 z-20 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md text-[11px] text-[#D4D4D4] pointer-events-none border border-white/10 flex items-center gap-1.5 shadow-lg">
                 <span className="text-[#A3A3A3]">&larr; Swipe left to pass</span>
                 <span className="text-[#333333]">&middot;</span>
-                <span className="text-[#F5B82E] font-medium">Swipe right to select &rarr;</span>
+                <span className="text-[#D4AF37] font-medium">Swipe right to select &rarr;</span>
               </div>
             </div>
 
@@ -500,13 +500,13 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
 
               <div className="flex items-center gap-2.5">
                 {currentAsset.commentCount > 0 && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#1C1C1C] border border-[#2E2E2E] text-[#F5B82E] text-xs font-medium">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#1C1C1C] border border-[#2E2E2E] text-[#D4AF37] text-xs font-medium">
                     <MessageSquare className="w-3.5 h-3.5" />
                     <span>{currentAsset.commentCount}</span>
                   </span>
                 )}
                 {currentAsset.isSelected && (
-                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#F5B82E] bg-[#F5B82E]/10 border border-[#F5B82E]/30 px-3 py-1 rounded-lg">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D4AF37] bg-[#D4AF37]/10 border border-[#D4AF37]/30 px-3 py-1 rounded-lg">
                     <Check className="w-3.5 h-3.5 stroke-[3]" />
                     <span>In Album</span>
                   </span>
@@ -524,7 +524,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
           type="button"
           onClick={handleUndo}
           disabled={history.length === 0}
-          className="flex-none p-3 rounded-xl bg-[#141414] hover:bg-[#1E1E1E] disabled:opacity-30 border border-[#262626] text-[#A3A3A3] hover:text-white transition-all min-h-[50px] min-w-[50px] flex items-center justify-center shadow-md active:scale-95"
+          className="flex-none p-3 rounded-xl bg-[#141414] hover:bg-[#1E1E22] disabled:opacity-30 border border-[#27272A] text-[#A1A1AA] hover:text-white transition-all min-h-[50px] min-w-[50px] flex items-center justify-center shadow-md active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
           title={`Undo last swipe action (${history.length} in history) [Z / U]`}
         >
           <RotateCcw className="w-5 h-5" />
@@ -534,10 +534,10 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
         <button
           type="button"
           onClick={() => handleSwipeLeftPass()}
-          className="flex-1 flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-[#181818] hover:bg-[#222222] border border-[#2D2D2D] hover:border-[#404040] text-xs font-semibold text-[#A3A3A3] hover:text-white transition-all min-h-[50px] active:scale-95 shadow-md"
+          className="flex-1 flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-[#181818] hover:bg-[#202020] border border-[#27272A] hover:border-[#3F3F46] text-xs font-semibold text-[#A1A1AA] hover:text-white transition-all min-h-[50px] active:scale-95 shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
           title="Swipe card left to pass without selecting (Left Arrow / X)"
         >
-          <ArrowLeft className="w-4 h-4 text-[#8C8C8C]" />
+          <ArrowLeft className="w-4 h-4 text-[#A1A1AA]" />
           <span>Swipe Left (Pass)</span>
         </button>
 
@@ -546,10 +546,10 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
           type="button"
           onClick={() => handleSwipeRightSelect()}
           disabled={isSelectionLocked}
-          className={`flex-[1.4] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all min-h-[50px] active:scale-95 shadow-xl ${
+          className={`flex-[1.4] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all min-h-[50px] active:scale-95 shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] ${
             currentAsset.isSelected
-              ? 'bg-[#181818] border-2 border-[#F5B82E] text-[#F5B82E]'
-              : 'bg-[#F5B82E] hover:bg-[#E2A622] text-black shadow-[#F5B82E]/25 hover:scale-[1.02]'
+              ? 'bg-[#181818] border-2 border-[#D4AF37] text-[#D4AF37]'
+              : 'bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-[#D4AF37]/25 hover:scale-[1.02]'
           }`}
           title="Swipe card right to select photo for album (Right Arrow / Space)"
         >
@@ -560,15 +560,15 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
 
       {/* Linear Deck Progress Indicator */}
       <div className="w-full max-w-xl mx-auto space-y-1.5 pt-2">
-        <div className="w-full bg-[#161616] h-2 rounded-full overflow-hidden border border-[#242424]">
+        <div className="w-full bg-[#181818] h-2 rounded-full overflow-hidden border border-[#27272A]">
           <div
-            className="bg-[#F5B82E] h-full transition-all duration-300 rounded-full"
+            className="bg-gradient-to-r from-[#D4AF37] to-[#C5A028] h-full transition-all duration-300 rounded-full"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
-        <div className="flex items-center justify-between text-[11px] text-[#8C8C8C]">
+        <div className="flex items-center justify-between text-[11px] text-[#A1A1AA]">
           <span>Progress in this folder</span>
-          <span className="font-mono text-[#F5B82E]">{progressPercent}%</span>
+          <span className="font-mono text-[#D4AF37]">{progressPercent}%</span>
         </div>
       </div>
 
@@ -588,7 +588,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
                 }}
                 className={`relative shrink-0 w-16 h-16 rounded-xl overflow-hidden border transition-all ${
                   isCurrent
-                    ? 'border-[#F5B82E] ring-2 ring-[#F5B82E]/50 scale-105 shadow-lg'
+                    ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/50 scale-105 shadow-lg'
                     : 'border-[#262626] opacity-55 hover:opacity-100 hover:scale-[1.02]'
                 }`}
               >
@@ -598,7 +598,7 @@ export const SwipeCuratorDeck: React.FC<SwipeCuratorDeckProps> = ({
                   className="w-full h-full object-cover"
                 />
                 {item.isSelected && (
-                  <div className="absolute top-1 right-1 w-4 h-4 bg-[#F5B82E] rounded-full flex items-center justify-center text-black shadow">
+                  <div className="absolute top-1 right-1 w-4 h-4 bg-[#D4AF37] rounded-full flex items-center justify-center text-black shadow">
                     <Check className="w-2.5 h-2.5 stroke-[3.5]" />
                   </div>
                 )}
