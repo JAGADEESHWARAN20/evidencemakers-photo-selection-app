@@ -1,0 +1,6 @@
+{
+  "name": "Evidence Makers — Photo Management & Client Proofing",
+  "description": "Editorial client proofing, RAW/JPEG asset pairing, package-guided album selection, and contextual picture-chat for professional wedding and event photography.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* 4 Brand Colors & Variations in Depth Only */
+  /* 1. Brand Gold */
+  --color-brand-gold: #F5B82E;
+  --color-brand-gold-hover: #E2A622;
+  --color-brand-gold-glow: rgba(245, 184, 46, 0.2);
+  --color-brand-gold-muted: rgba(245, 184, 46, 0.12);
+
+  /* 2. Deep Canvas Black */
+  --color-brand-bg: #080808;
+  --color-brand-surface: #121212;
+  --color-brand-elevated: #181818;
+
+  /* 3. Pure White */
+  --color-brand-text: #FFFFFF;
+
+  /* 4. Neutral Slate */
+  --color-brand-border: #242424;
+  --color-brand-border-subtle: #1C1C1C;
+  --color-brand-muted: #8C8C8C;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: #080808;
+    color: #FFFFFF;
+  }
+
+  h1, h2, h3, .font-editorial {
+    font-family: var(--font-serif);
+  }
+}
+
+/* Custom smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080808;
+}
+::-webkit-scrollbar-thumb {
+  background: #242424;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #F5B82E;
+}
