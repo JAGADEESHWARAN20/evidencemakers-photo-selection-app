@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   LayoutGrid,
   Sparkles,
+  Download,
 } from 'lucide-react';
 import { GalleryFilterPopover } from '../../components/gallery/GalleryFilterPopover.tsx';
 import { BrandLogo } from '../../components/brand/BrandLogo.tsx';
@@ -41,6 +42,7 @@ interface ClientPortalViewProps {
   onOpenProjectChat: () => void;
   onRefreshProject: () => void;
   onBackToStudio?: () => void;
+  onToggleSelection?: (assetId: string) => void;
 }
 
 export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
@@ -50,6 +52,7 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
   onOpenPhotoDetail,
   onOpenProjectChat,
   onRefreshProject,
+  onToggleSelection,
 }) => {
   // Authentication & Onboarding State Machine
   const [portalState, setPortalState] = useState<'pin_gate' | 'onboarding' | 'unlocked'>(() => {
@@ -68,16 +71,26 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [submissionNote, setSubmissionNote] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [quotaToast, setQuotaToast] = useState<string | null>(null);
 
-  // Project-specific assets
+  // Project-specific assets with stable IDs
   const projectAssets = useMemo(() => {
     return assets.filter((a) => a.projectId === project.id);
   }, [assets, project.id]);
 
-  const selectedAssets = useMemo(() => {
-    return projectAssets.filter((a) => a.isSelected);
+  // Normalized Set of selected unique asset IDs (single source of truth)
+  const selectedAssetIdSet = useMemo(() => {
+    const set = new Set<string>();
+    projectAssets.forEach((a) => {
+      if (a.isSelected) set.add(a.id);
+    });
+    return set;
   }, [projectAssets]);
+
+  const selectedAssets = useMemo(() => {
+    return projectAssets.filter((a) => selectedAssetIdSet.has(a.id));
+  }, [projectAssets, selectedAssetIdSet]);
 
   const isLocked = project.status === 'selections_submitted' || project.status === 'album_production';
   const remainingCount = Math.max(0, project.selectionLimit - selectedAssets.length);
@@ -111,19 +124,34 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
     { id: 'getting_ready', label: 'Getting Ready', count: folderCounts.getting_ready, icon: <Folder size={16} /> },
   ], [folderCounts]);
 
-  // Filtered Assets
+  // Category assets for accurate sub-filtering
+  const categoryAssets = useMemo(() => {
+    return activeCategory === 'all'
+      ? projectAssets
+      : projectAssets.filter((a) => a.category === activeCategory);
+  }, [projectAssets, activeCategory]);
+
+  const categorySelectedCount = useMemo(() => {
+    return categoryAssets.filter((a) => selectedAssetIdSet.has(a.id)).length;
+  }, [categoryAssets, selectedAssetIdSet]);
+
+  const categoryUnselectedCount = useMemo(() => {
+    return categoryAssets.length - categorySelectedCount;
+  }, [categoryAssets.length, categorySelectedCount]);
+
+  // Filtered Assets (filtering only controls visibility, never modifies selection)
   const displayedAssets = useMemo(() => {
     return projectAssets.filter((a) => {
       if (activeCategory !== 'all' && a.category !== activeCategory) return false;
-      if (selectionFilter === 'selected' && !a.isSelected) return false;
-      if (selectionFilter === 'unselected' && a.isSelected) return false;
+      if (selectionFilter === 'selected' && !selectedAssetIdSet.has(a.id)) return false;
+      if (selectionFilter === 'unselected' && selectedAssetIdSet.has(a.id)) return false;
       if (selectionFilter === 'commented') {
         const hasAssetMsg = messages.some((m) => m.projectId === project.id && m.assetId === a.id);
-        if (!hasAssetMsg && a.commentCount === 0) return false;
+        if (!hasAssetMsg && (a.commentCount || 0) === 0) return false;
       }
       return true;
     });
-  }, [projectAssets, activeCategory, selectionFilter, messages, project.id]);
+  }, [projectAssets, activeCategory, selectionFilter, messages, project.id, selectedAssetIdSet]);
 
   // Handle PIN unlock
   const handleUnlockPin = (e: React.FormEvent) => {
@@ -137,17 +165,22 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
   };
 
   // Toggle selection on a photo card
-  const handleToggle = async (asset: GalleryAsset, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleToggle = async (asset: GalleryAsset, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     if (isLocked) {
       setQuotaToast('Selections have been submitted and this collection is locked for production.');
       setTimeout(() => setQuotaToast(null), 3500);
       return;
     }
 
-    const isSelecting = !asset.isSelected;
+    if (onToggleSelection) {
+      onToggleSelection(asset.id);
+      return;
+    }
+
+    const isSelecting = !selectedAssetIdSet.has(asset.id);
     const quotaCheck = evaluateSelectionQuota(
-      selectedAssets.length,
+      selectedAssetIdSet.size,
       project.selectionLimit,
       isSelecting,
       isLocked
@@ -168,13 +201,35 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
     }
   };
 
+  // Download selected photos action (includes only selected images, disabled when empty)
+  const handleDownloadSelected = async () => {
+    if (selectedAssets.length === 0) return;
+    setIsDownloading(true);
+    try {
+      for (const asset of selectedAssets) {
+        const res = await services.assetService.getJpegDownloadUrl(asset.id);
+        const link = document.createElement('a');
+        link.href = res.downloadUrl;
+        link.download = res.filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (err: any) {
+      setQuotaToast(`Download failed: ${err.message || 'Unable to download photos'}`);
+      setTimeout(() => setQuotaToast(null), 4000);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   // Submit Final Album Selections
   const handleFinalSubmit = async () => {
     try {
       setIsSubmitting(true);
       await services.selectionService.submitFinalSelection({
         projectId: project.id,
-        selectedAssetIds: selectedAssets.map((a) => a.id),
+        selectedAssetIds: Array.from(selectedAssetIdSet),
         clientNote: submissionNote.trim() || undefined,
       });
       setIsSubmitModalOpen(false);
@@ -360,6 +415,20 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
               </span>
             </button>
 
+            {/* Download Selected Photographs Button (disabled when selection is empty) */}
+            <button
+              type="button"
+              onClick={handleDownloadSelected}
+              disabled={isDownloading || selectedAssets.length === 0}
+              className="inline-flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-[#A1A1AA] hover:text-white bg-[#141414] hover:bg-[#181818] border border-[#27272A] rounded-xl transition-colors min-h-[44px] disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+              title={selectedAssets.length === 0 ? 'Select photos to enable download' : `Download ${selectedAssets.length} selected photographs`}
+            >
+              <Download className="w-4 h-4 text-[#D4AF37]" />
+              <span className="hidden sm:inline">Download Selected</span>
+              <span className="sm:hidden">Download</span>
+              <span className="font-mono text-[10px] text-[#D4AF37] font-semibold">({selectedAssets.length})</span>
+            </button>
+
             <button
               type="button"
               onClick={onOpenProjectChat}
@@ -470,9 +539,9 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
         <div className="hidden sm:flex flex-wrap items-center gap-2.5">
           <span className="text-xs text-[#8C8C8C] font-medium mr-1">Filter by:</span>
           {[
-            { id: 'all', label: `All In Folder (${displayedAssets.length})` },
-            { id: 'selected', label: `Selected (${selectedAssets.length})` },
-            { id: 'unselected', label: 'Unselected' },
+            { id: 'all', label: `All In Folder (${categoryAssets.length})` },
+            { id: 'selected', label: `Selected (${categorySelectedCount})` },
+            { id: 'unselected', label: `Unselected (${categoryUnselectedCount})` },
             { id: 'commented', label: 'With Retouch Notes' },
           ].map((filter) => (
             <button
@@ -558,18 +627,19 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5 lg:gap-6">
           {displayedAssets.map((asset) => {
             const assetComments = messages.filter(
               (m) => m.projectId === project.id && m.assetId === asset.id
             );
+            const isSelected = selectedAssetIdSet.has(asset.id);
 
             return (
               <div
                 key={asset.id}
                 onClick={() => onOpenPhotoDetail(asset)}
-                className={`group relative bg-[#121212] border rounded-xl overflow-hidden transition-all duration-300 cursor-pointer shadow-md hover:shadow-2xl hover:border-[#383838] ${
-                  asset.isSelected
+                className={`group relative bg-[#121212] border rounded-xl overflow-hidden transition-all duration-300 cursor-pointer shadow-md hover:shadow-xl hover:border-[#383838] ${
+                  isSelected
                     ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/40 shadow-xl'
                     : 'border-[#242424]'
                 }`}
@@ -592,33 +662,33 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
                     type="button"
                     onClick={(e) => handleToggle(asset, e)}
                     disabled={isLocked}
-                    className={`absolute top-3 right-3 z-10 w-9 h-9 rounded-full flex items-center justify-center transition-all ${
-                      asset.isSelected
+                    className={`absolute top-2.5 right-2.5 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all ${
+                      isSelected
                         ? 'bg-[#D4AF37] text-black shadow-lg scale-105'
                         : 'bg-black/60 hover:bg-black/80 text-white/80 hover:text-white backdrop-blur-sm border border-white/20'
                     }`}
-                    aria-label={asset.isSelected ? 'Deselect photo' : 'Select photo for album'}
+                    aria-label={isSelected ? `Deselect ${asset.baseFilename}` : `Select ${asset.baseFilename} for album`}
                   >
                     <Check
-                      className={`w-4 h-4 ${asset.isSelected ? 'stroke-[3] text-black' : 'opacity-80'}`}
+                      className={`w-4 h-4 ${isSelected ? 'stroke-[3] text-black' : 'opacity-80'}`}
                     />
                   </button>
 
                   {/* Bottom-left comment notes indicator */}
                   {assetComments.length > 0 && (
-                    <div className="absolute bottom-3 left-3 px-2.5 py-1 bg-black/80 backdrop-blur-sm text-[#D4AF37] text-[11px] font-medium rounded-md flex items-center gap-1.5 shadow">
-                      <MessageSquare className="w-3.5 h-3.5" />
+                    <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 bg-black/80 backdrop-blur-sm text-[#D4AF37] text-[10px] font-medium rounded flex items-center gap-1 shadow">
+                      <MessageSquare className="w-3 h-3" />
                       <span>{assetComments.length}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Card Minimalist Caption Footer */}
-                <div className="p-3.5 flex items-center justify-between text-xs text-[#8C8C8C] font-sans">
-                  <span className="text-[11px] font-mono truncate max-w-[150px] font-medium text-white">
+                <div className="p-3 flex items-center justify-between text-xs text-[#8C8C8C] font-sans">
+                  <span className="text-[11px] font-mono truncate max-w-[130px] font-medium text-white" title={asset.baseFilename}>
                     {asset.baseFilename}
                   </span>
-                  <span className="text-[10px] capitalize text-[#8C8C8C] uppercase tracking-wider">
+                  <span className="text-[10px] capitalize text-[#8C8C8C] uppercase tracking-wider shrink-0">
                     {asset.category.replace('_', ' ')}
                   </span>
                 </div>

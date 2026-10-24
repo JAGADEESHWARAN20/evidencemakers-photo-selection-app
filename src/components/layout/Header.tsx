@@ -11,7 +11,6 @@ import { Menu, Plus } from 'lucide-react';
 import {
   IconStudioOverview,
   IconProjectsFolio,
-  IconPlusProject,
 } from '../icons/BespokeIcons.tsx';
 
 export type NavView = 'dashboard' | 'projects' | 'assets' | 'selection_review' | 'client_portal';
@@ -89,16 +88,6 @@ export const Header: React.FC<HeaderProps> = ({
               title="View production backend integration specifications"
             >
               API Integration
-            </button>
-
-            {/* New Project Button */}
-            <button
-              onClick={onOpenNewProject}
-              className="group inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold tracking-wider uppercase text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-lg transition-all shadow-sm hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap shrink-0 min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
-            >
-              <IconPlusProject size={15} />
-              <span className="hidden sm:inline">New Project</span>
-              <span className="sm:hidden">Project</span>
             </button>
 
             {/* Mobile Navigation Trigger */}

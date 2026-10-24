@@ -89,3 +89,29 @@ export function validateFinalSubmission(
 
   return { isValid: true };
 }
+
+export function toggleSelectionInSet(selectedIds: Set<string>, assetId: string): Set<string> {
+  const nextSet = new Set(selectedIds);
+  if (nextSet.has(assetId)) {
+    nextSet.delete(assetId);
+  } else {
+    nextSet.add(assetId);
+  }
+  return nextSet;
+}
+
+export function filterAssetsBySelection<T extends { id: string }>(
+  assets: T[],
+  selectedIds: Set<string>,
+  filter: 'all' | 'selected' | 'unselected'
+): T[] {
+  switch (filter) {
+    case 'selected':
+      return assets.filter((asset) => selectedIds.has(asset.id));
+    case 'unselected':
+      return assets.filter((asset) => !selectedIds.has(asset.id));
+    default:
+      return assets;
+  }
+}
+

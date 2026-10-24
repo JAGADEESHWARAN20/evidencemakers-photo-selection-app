@@ -48,20 +48,54 @@ function saveStorage<T>(key: string, data: T) {
   }
 }
 
+class MockDataStore {
+  private static instance: MockDataStore;
+  public projects: Project[];
+  public assets: GalleryAsset[];
+  public messages: Message[];
+
+  private constructor() {
+    this.projects = loadStorage(STORAGE_KEYS.PROJECTS, INITIAL_MOCK_PROJECTS);
+    this.assets = loadStorage(STORAGE_KEYS.ASSETS, INITIAL_MOCK_ASSETS);
+    this.messages = loadStorage(STORAGE_KEYS.MESSAGES, INITIAL_MOCK_MESSAGES);
+  }
+
+  public static getInstance(): MockDataStore {
+    if (!MockDataStore.instance) {
+      MockDataStore.instance = new MockDataStore();
+    }
+    return MockDataStore.instance;
+  }
+
+  public saveProjects(): void {
+    saveStorage(STORAGE_KEYS.PROJECTS, this.projects);
+  }
+
+  public saveAssets(): void {
+    saveStorage(STORAGE_KEYS.ASSETS, this.assets);
+  }
+
+  public saveMessages(): void {
+    saveStorage(STORAGE_KEYS.MESSAGES, this.messages);
+  }
+}
+
 export class MockProjectService implements IProjectService {
-  private projects: Project[] = loadStorage(STORAGE_KEYS.PROJECTS, INITIAL_MOCK_PROJECTS);
+  private get store() {
+    return MockDataStore.getInstance();
+  }
 
   public async listProjects(): Promise<Project[]> {
-    return [...this.projects];
+    return [...this.store.projects];
   }
 
   public async getProjectById(projectId: string): Promise<Project | null> {
-    const p = this.projects.find((proj) => proj.id === projectId);
+    const p = this.store.projects.find((proj) => proj.id === projectId);
     return p ? { ...p } : null;
   }
 
   public async getProjectByShareToken(token: string): Promise<Project | null> {
-    const p = this.projects.find((proj) => proj.shareToken === token || proj.id === token);
+    const p = this.store.projects.find((proj) => proj.shareToken === token || proj.id === token);
     return p ? { ...p } : null;
   }
 
@@ -88,35 +122,35 @@ export class MockProjectService implements IProjectService {
       updatedAt: new Date().toISOString(),
     };
 
-    this.projects.unshift(newProject);
-    saveStorage(STORAGE_KEYS.PROJECTS, this.projects);
+    this.store.projects.unshift(newProject);
+    this.store.saveProjects();
     return { ...newProject };
   }
 
   public async updateProject(projectId: string, dto: UpdateProjectDTO): Promise<Project> {
-    const index = this.projects.findIndex((p) => p.id === projectId);
+    const index = this.store.projects.findIndex((p) => p.id === projectId);
     if (index === -1) throw new Error(`Project ${projectId} not found.`);
 
-    const existing = this.projects[index];
+    const existing = this.store.projects[index];
     const updated: Project = {
       ...existing,
       ...dto,
       updatedAt: new Date().toISOString(),
     };
 
-    this.projects[index] = updated;
-    saveStorage(STORAGE_KEYS.PROJECTS, this.projects);
+    this.store.projects[index] = updated;
+    this.store.saveProjects();
     return { ...updated };
   }
 
   public async regenerateShareLink(projectId: string): Promise<{ shareToken: string; shareUrl: string }> {
-    const index = this.projects.findIndex((p) => p.id === projectId);
+    const index = this.store.projects.findIndex((p) => p.id === projectId);
     if (index === -1) throw new Error(`Project ${projectId} not found.`);
 
     const newToken = `token_${projectId.toLowerCase().replace('-', '_')}_${Date.now().toString(36)}`;
-    this.projects[index].shareToken = newToken;
-    this.projects[index].updatedAt = new Date().toISOString();
-    saveStorage(STORAGE_KEYS.PROJECTS, this.projects);
+    this.store.projects[index].shareToken = newToken;
+    this.store.projects[index].updatedAt = new Date().toISOString();
+    this.store.saveProjects();
 
     const shareUrl = `${window.location.origin}/portal/${newToken}`;
     return { shareToken: newToken, shareUrl };
@@ -124,17 +158,17 @@ export class MockProjectService implements IProjectService {
 }
 
 export class MockAssetService implements IAssetService {
-  private assets: GalleryAsset[] = loadStorage(STORAGE_KEYS.ASSETS, INITIAL_MOCK_ASSETS);
+  private get store() {
+    return MockDataStore.getInstance();
+  }
 
   public async getAssetsByProject(projectId: string): Promise<GalleryAsset[]> {
-    return this.assets.filter((a) => a.projectId === projectId);
+    return this.store.assets.filter((a) => a.projectId === projectId);
   }
 
   public async requestPresignedUpload(dto: PresignedUploadUrlRequest): Promise<PresignedUploadUrlResponse> {
-    const extension = dto.filename.split('.').pop()?.toUpperCase() || 'DAT';
     const folder = dto.isRaw ? 'raw' : 'previews';
     const storageKey = `vault/${dto.projectId}/${folder}/${dto.filename}`;
-    // Mock direct-to-object-storage presigned upload URL
     const uploadUrl = `https://storage.googleapis.com/evidence-makers-vault/${storageKey}?mock_signature=true`;
 
     return {
@@ -181,8 +215,8 @@ export class MockAssetService implements IAssetService {
       height: 2000,
     };
 
-    this.assets.push(newAsset);
-    saveStorage(STORAGE_KEYS.ASSETS, this.assets);
+    this.store.assets.push(newAsset);
+    this.store.saveAssets();
     return { ...newAsset };
   }
 
@@ -196,26 +230,24 @@ export class MockAssetService implements IAssetService {
   }
 
   public async getRawDownloadUrl(assetId: string): Promise<{ downloadUrl: string; filename: string; expiresIn: number }> {
-    const asset = this.assets.find((a) => a.id === assetId);
+    const asset = this.store.assets.find((a) => a.id === assetId);
     if (!asset || !asset.rawFilename) {
       throw new Error(`Asset ${assetId} does not have a linked RAW master file.`);
     }
 
-    // In a real environment, this returns a short-lived presigned AWS S3 / Cloud Storage GET URL
     return {
-      downloadUrl: asset.previewUrl, // safe fallback for browser download demonstration
+      downloadUrl: asset.previewUrl,
       filename: asset.rawFilename,
-      expiresIn: 900, // 15 mins
+      expiresIn: 900,
     };
   }
 
   public async getJpegDownloadUrl(assetId: string): Promise<{ downloadUrl: string; filename: string; expiresIn: number }> {
-    const asset = this.assets.find((a) => a.id === assetId);
+    const asset = this.store.assets.find((a) => a.id === assetId);
     if (!asset) {
       throw new Error('Asset not found.');
     }
 
-    // The production adapter replaces this with a Google Drive API download URL.
     return {
       downloadUrl: asset.previewUrl,
       filename: asset.jpegFilename,
@@ -225,16 +257,21 @@ export class MockAssetService implements IAssetService {
 }
 
 export class MockSelectionService implements ISelectionService {
-  private assets: GalleryAsset[] = loadStorage(STORAGE_KEYS.ASSETS, INITIAL_MOCK_ASSETS);
-  private projects: Project[] = loadStorage(STORAGE_KEYS.PROJECTS, INITIAL_MOCK_PROJECTS);
+  private get store() {
+    return MockDataStore.getInstance();
+  }
 
   public async getSelectionState(projectId: string): Promise<SelectionState> {
-    const project = this.projects.find((p) => p.id === projectId);
+    const project = this.store.projects.find((p) => p.id === projectId);
     const limit = project ? project.selectionLimit : 60;
     const isLocked = project?.status === 'selections_submitted' || project?.status === 'album_production';
 
-    const projectAssets = this.assets.filter((a) => a.projectId === projectId);
-    const selectedIds = projectAssets.filter((a) => a.isSelected).map((a) => a.id);
+    const projectAssets = this.store.assets.filter((a) => a.projectId === projectId);
+    const selectedSet = new Set<string>();
+    projectAssets.forEach((a) => {
+      if (a.isSelected) selectedSet.add(a.id);
+    });
+    const selectedIds = Array.from(selectedSet);
 
     return {
       projectId,
@@ -249,54 +286,70 @@ export class MockSelectionService implements ISelectionService {
   }
 
   public async toggleAssetSelection(projectId: string, assetId: string, isSelected: boolean): Promise<SelectionState> {
-    const project = this.projects.find((p) => p.id === projectId);
+    const project = this.store.projects.find((p) => p.id === projectId);
     const limit = project ? project.selectionLimit : 60;
     const isLocked = project?.status === 'selections_submitted' || project?.status === 'album_production';
 
-    const projectAssets = this.assets.filter((a) => a.projectId === projectId);
-    const currentSelectedCount = projectAssets.filter((a) => a.isSelected).length;
+    // Normalized Set of selected asset IDs for this project
+    const projectAssets = this.store.assets.filter((a) => a.projectId === projectId);
+    const selectedSet = new Set<string>();
+    projectAssets.forEach((a) => {
+      if (a.isSelected) selectedSet.add(a.id);
+    });
+
+    const isCurrentlySelected = selectedSet.has(assetId);
+    if (isSelected === isCurrentlySelected) {
+      // Already in requested state, return canonical state
+      return this.getSelectionState(projectId);
+    }
 
     // Check quota logic
-    const quota = evaluateSelectionQuota(currentSelectedCount, limit, isSelected, isLocked);
+    const quota = evaluateSelectionQuota(selectedSet.size, limit, isSelected, isLocked);
     if (!quota.canSelect) {
       throw new Error(quota.reason || 'Cannot update selection.');
     }
 
-    // Update in-memory & storage
-    const assetIndex = this.assets.findIndex((a) => a.id === assetId && a.projectId === projectId);
-    if (assetIndex !== -1) {
-      this.assets[assetIndex].isSelected = isSelected;
-      this.assets[assetIndex].selectedAt = isSelected ? new Date().toISOString() : undefined;
-      saveStorage(STORAGE_KEYS.ASSETS, this.assets);
+    if (isSelected) {
+      selectedSet.add(assetId);
+    } else {
+      selectedSet.delete(assetId);
+    }
+
+    // Update the asset model in the unified store
+    const targetAsset = this.store.assets.find((a) => a.id === assetId && a.projectId === projectId);
+    if (targetAsset) {
+      targetAsset.isSelected = isSelected;
+      targetAsset.selectedAt = isSelected ? new Date().toISOString() : undefined;
+      this.store.saveAssets();
     }
 
     return this.getSelectionState(projectId);
   }
 
   public async submitFinalSelection(request: SelectionSubmissionRequest): Promise<SelectionState> {
-    const projectIndex = this.projects.findIndex((p) => p.id === request.projectId);
+    const projectIndex = this.store.projects.findIndex((p) => p.id === request.projectId);
     if (projectIndex === -1) throw new Error(`Project ${request.projectId} not found.`);
 
-    const project = this.projects[projectIndex];
-    const validation = validateFinalSubmission(request.selectedAssetIds.length, project.selectionLimit);
+    const project = this.store.projects[projectIndex];
+    const uniqueSelectedIds = Array.from(new Set(request.selectedAssetIds));
+    const validation = validateFinalSubmission(uniqueSelectedIds.length, project.selectionLimit);
     if (!validation.isValid) {
       throw new Error(validation.error);
     }
 
-    // Update project status to selections_submitted
     const now = new Date().toISOString();
     project.status = 'selections_submitted';
     project.submissionDate = now;
     project.finalClientNote = request.clientNote;
     project.updatedAt = now;
-    this.projects[projectIndex] = project;
-    saveStorage(STORAGE_KEYS.PROJECTS, this.projects);
+    this.store.projects[projectIndex] = project;
+    this.store.saveProjects();
 
     return {
       projectId: request.projectId,
-      selectedAssetIds: request.selectedAssetIds,
+      selectedAssetIds: uniqueSelectedIds,
       limit: project.selectionLimit,
-      remaining: Math.max(0, project.selectionLimit - request.selectedAssetIds.length),
+      remaining: Math.max(0, project.selectionLimit - uniqueSelectedIds.length),
       isLocked: true,
       submittedAt: now,
       clientSubmissionNote: request.clientNote,
@@ -305,25 +358,29 @@ export class MockSelectionService implements ISelectionService {
   }
 
   public async resetSelections(projectId: string): Promise<SelectionState> {
-    this.assets.forEach((a) => {
-      if (a.projectId === projectId) a.isSelected = false;
+    this.store.assets.forEach((a) => {
+      if (a.projectId === projectId) {
+        a.isSelected = false;
+        a.selectedAt = undefined;
+      }
     });
-    saveStorage(STORAGE_KEYS.ASSETS, this.assets);
+    this.store.saveAssets();
     return this.getSelectionState(projectId);
   }
 }
 
 export class MockMessageService implements IMessageService {
-  private messages: Message[] = loadStorage(STORAGE_KEYS.MESSAGES, INITIAL_MOCK_MESSAGES);
+  private get store() {
+    return MockDataStore.getInstance();
+  }
   private listeners: Array<(msg: Message) => void> = [];
 
   public async getMessages(projectId: string, assetId?: string): Promise<Message[]> {
-    return this.messages.filter((m) => {
+    return this.store.messages.filter((m) => {
       if (m.projectId !== projectId) return false;
       if (assetId) {
         return m.assetId === assetId;
       }
-      // Project-level thread: either no assetId, or all messages
       return !m.assetId;
     });
   }
@@ -339,8 +396,17 @@ export class MockMessageService implements IMessageService {
       createdAt: new Date().toISOString(),
     };
 
-    this.messages.push(newMsg);
-    saveStorage(STORAGE_KEYS.MESSAGES, this.messages);
+    this.store.messages.push(newMsg);
+    this.store.saveMessages();
+
+    // Increment comment count on asset in store if assetId present
+    if (payload.assetId) {
+      const asset = this.store.assets.find((a) => a.id === payload.assetId);
+      if (asset) {
+        asset.commentCount = (asset.commentCount || 0) + 1;
+        this.store.saveAssets();
+      }
+    }
 
     // Notify subscribers
     this.listeners.forEach((fn) => fn(newMsg));

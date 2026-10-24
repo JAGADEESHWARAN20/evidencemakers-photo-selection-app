@@ -19,6 +19,7 @@ import {
   MoreVertical,
   Search,
   Images,
+  Check,
 } from 'lucide-react';
 
 interface AssetManagerViewProps {
@@ -29,6 +30,7 @@ interface AssetManagerViewProps {
   onOpenSelectionReview: () => void;
   onRefreshAssets: () => void;
   isProjectSwitching: boolean;
+  onToggleSelection?: (assetId: string) => void;
 }
 
 export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
@@ -39,6 +41,7 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
   onOpenSelectionReview,
   onRefreshAssets,
   isProjectSwitching,
+  onToggleSelection,
 }) => {
   const [filterMode, setFilterMode] = useState<'all' | 'selected' | 'unselected'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -54,20 +57,30 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
     return assets.filter((a) => a.projectId === project.id);
   }, [assets, project.id]);
 
+  // Normalized Set of selected unique asset IDs
+  const selectedAssetIdSet = useMemo(() => {
+    const set = new Set<string>();
+    projectAssets.forEach((a) => {
+      if (a.isSelected) set.add(a.id);
+    });
+    return set;
+  }, [projectAssets]);
+
   const filteredAssets = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
     return projectAssets.filter((asset) => {
+      const isSelected = selectedAssetIdSet.has(asset.id);
       const matchesFilter =
         filterMode === 'all' ||
-        (filterMode === 'selected' && asset.isSelected) ||
-        (filterMode === 'unselected' && !asset.isSelected);
+        (filterMode === 'selected' && isSelected) ||
+        (filterMode === 'unselected' && !isSelected);
       const matchesSearch =
         !normalizedQuery ||
         asset.jpegFilename.toLowerCase().includes(normalizedQuery) ||
         asset.baseFilename.toLowerCase().includes(normalizedQuery);
       return matchesFilter && matchesSearch;
     });
-  }, [projectAssets, filterMode, searchQuery]);
+  }, [projectAssets, filterMode, searchQuery, selectedAssetIdSet]);
 
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -197,7 +210,7 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
   };
 
   const handleBulkJpegDownload = async () => {
-    const selectedAssets = projectAssets.filter((asset) => asset.isSelected);
+    const selectedAssets = projectAssets.filter((asset) => selectedAssetIdSet.has(asset.id));
     if (selectedAssets.length === 0) return;
 
     setIsBulkDownloading(true);
@@ -399,19 +412,19 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
             <button
               type="button"
               onClick={handleBulkJpegDownload}
-              disabled={isBulkDownloading || !projectAssets.some((asset) => asset.isSelected)}
+              disabled={isBulkDownloading || selectedAssetIdSet.size === 0}
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-2 text-xs font-semibold text-[#D4AF37] transition-colors hover:bg-[#D4AF37]/20 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <Images className="h-4 w-4" />
-              {isBulkDownloading ? 'Preparing downloads…' : `Download selected JPEGs (${projectAssets.filter((asset) => asset.isSelected).length})`}
+              {isBulkDownloading ? 'Preparing downloads…' : `Download selected JPEGs (${selectedAssetIdSet.size})`}
             </button>
           </div>
 
           <div className="mt-4 flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
             {[
               { id: 'all', label: `All (${projectAssets.length})` },
-              { id: 'selected', label: `Selected (${projectAssets.filter((asset) => asset.isSelected).length})` },
-              { id: 'unselected', label: `Unselected (${projectAssets.filter((asset) => !asset.isSelected).length})` },
+              { id: 'selected', label: `Selected (${selectedAssetIdSet.size})` },
+              { id: 'unselected', label: `Unselected (${projectAssets.length - selectedAssetIdSet.size})` },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -436,56 +449,90 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
               <p className="text-sm">No assets match the selected filter.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {filteredAssets.map((asset) => (
-                <div
-                  key={asset.id}
-                  className="group overflow-hidden rounded-lg border border-[#242424] bg-[#080808] transition-colors hover:border-[#333333]"
-                >
-                  <div className="aspect-[4/3] bg-[#080808] relative overflow-hidden">
-                    <img
-                      src={asset.previewUrl}
-                      alt={asset.baseFilename}
-                      referrerPolicy="no-referrer"
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute right-2 top-2">
-                      <button
-                        type="button"
-                        onClick={() => setOpenDownloadMenuAssetId((current) => current === asset.id ? null : asset.id)}
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-black"
-                        aria-label={`Download options for ${asset.jpegFilename}`}
-                      >
-                        <MoreVertical className="h-4 w-4" />
-                      </button>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5 lg:gap-6">
+              {filteredAssets.map((asset) => {
+                const isSelected = selectedAssetIdSet.has(asset.id);
+                return (
+                  <div
+                    key={asset.id}
+                    className={`group relative overflow-hidden rounded-lg border transition-all duration-200 bg-[#080808] ${
+                      isSelected
+                        ? 'border-[#D4AF37] ring-1 ring-[#D4AF37]'
+                        : 'border-[#242424] hover:border-[#3f3f46]'
+                    }`}
+                  >
+                    <div className="aspect-[4/3] bg-[#080808] relative overflow-hidden">
+                      <img
+                        src={asset.previewUrl}
+                        alt={asset.baseFilename}
+                        referrerPolicy="no-referrer"
+                        className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${
+                          isSelected ? 'brightness-105' : ''
+                        }`}
+                      />
 
-                      {openDownloadMenuAssetId === asset.id && (
-                        <div className="absolute right-0 top-10 z-10 w-40 rounded-lg border border-[#27272A] bg-[#121212] p-1 shadow-xl">
-                          <button
-                            type="button"
-                            onClick={() => handleDownloadJpeg(asset)}
-                            className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs text-white transition-colors hover:bg-[#242424]"
-                          >
-                            <Download className="h-3.5 w-3.5 text-[#D4AF37]" />
-                            Download JPEG
-                          </button>
-                          {asset.rawFilename && (
+                      {/* Selection Toggle Button */}
+                      {onToggleSelection && (
+                        <button
+                          type="button"
+                          onClick={() => onToggleSelection(asset.id)}
+                          aria-label={isSelected ? `Deselect ${asset.jpegFilename}` : `Select ${asset.jpegFilename}`}
+                          className={`absolute left-2.5 top-2.5 z-10 flex h-7 w-7 items-center justify-center rounded-md border transition-all duration-150 ${
+                            isSelected
+                              ? 'border-[#D4AF37] bg-[#D4AF37] text-black shadow-md'
+                              : 'border-white/40 bg-black/60 text-white opacity-0 group-hover:opacity-100 focus:opacity-100 hover:border-white'
+                          }`}
+                        >
+                          <Check className={`h-4 w-4 stroke-[2.5] ${isSelected ? 'text-black' : 'text-white'}`} />
+                        </button>
+                      )}
+
+                      {/* Download Menu Button */}
+                      <div className="absolute right-2.5 top-2.5 z-10">
+                        <button
+                          type="button"
+                          onClick={() => setOpenDownloadMenuAssetId((current) => current === asset.id ? null : asset.id)}
+                          className="flex h-7 w-7 items-center justify-center rounded-md border border-white/20 bg-black/60 text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-black"
+                          aria-label={`Download options for ${asset.jpegFilename}`}
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                        </button>
+
+                        {openDownloadMenuAssetId === asset.id && (
+                          <div className="absolute right-0 top-9 z-20 w-44 rounded-lg border border-[#27272A] bg-[#121212] p-1.5 shadow-2xl">
                             <button
                               type="button"
-                              onClick={() => handleDownloadRaw(asset)}
-                              className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs text-white transition-colors hover:bg-[#242424]"
+                              onClick={() => handleDownloadJpeg(asset)}
+                              className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs font-medium text-white transition-colors hover:bg-[#242424]"
                             >
                               <Download className="h-3.5 w-3.5 text-[#D4AF37]" />
-                              Download RAW
+                              Download JPEG
                             </button>
-                          )}
-                        </div>
+                            {asset.rawFilename && (
+                              <button
+                                type="button"
+                                onClick={() => handleDownloadRaw(asset)}
+                                className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs font-medium text-white transition-colors hover:bg-[#242424]"
+                              >
+                                <Download className="h-3.5 w-3.5 text-[#D4AF37]" />
+                                Download RAW
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between px-3 py-2 border-t border-[#1e1e1e] bg-[#0c0c0c]">
+                      <p className="truncate text-[11px] font-mono text-[#A1A1AA]">{asset.jpegFilename}</p>
+                      {isSelected && (
+                        <span className="ml-2 flex-shrink-0 text-[10px] font-semibold text-[#D4AF37] uppercase tracking-wider">
+                          Selected
+                        </span>
                       )}
                     </div>
                   </div>
-                  <p className="truncate px-2.5 py-2 text-[11px] font-mono text-[#A1A1AA]">{asset.jpegFilename}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

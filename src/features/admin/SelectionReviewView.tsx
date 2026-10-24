@@ -6,16 +6,17 @@
 import React, { useState, useMemo } from 'react';
 import { Project } from '../../types/project.ts';
 import { GalleryAsset } from '../../types/asset.ts';
+import { services } from '../../services/index.ts';
 import {
   CheckCircle2,
   Clock,
   Camera,
-  ExternalLink,
   BookOpen,
   SlidersHorizontal,
   ChevronDown,
   Check,
-  Copy,
+  Images,
+  Download,
 } from 'lucide-react';
 import { Popover } from '../../components/common/Popover.tsx';
 import { SharePlatformPopover } from '../../components/project/SharePlatformPopover.tsx';
@@ -30,6 +31,7 @@ interface SelectionReviewViewProps {
   onOpenPhotoDetail: (asset: GalleryAsset) => void;
   onOpenClientPortal: (project: Project) => void;
   isProjectSwitching: boolean;
+  onToggleSelection?: (assetId: string) => void;
 }
 
 export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
@@ -41,10 +43,13 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
   onOpenPhotoDetail,
   onOpenClientPortal,
   isProjectSwitching,
+  onToggleSelection,
 }) => {
   const [filterMode, setFilterMode] = useState<'selected' | 'all' | 'unselected'>('selected');
   const [isFilterPopoverOpen, setIsFilterPopoverOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isBulkDownloading, setIsBulkDownloading] = useState(false);
+  const [downloadStatusMessage, setDownloadStatusMessage] = useState<string | null>(null);
 
   const handleCopyShareLink = () => {
     const url = `${window.location.origin}/?portal=${project.shareToken}`;
@@ -77,18 +82,25 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
     Math.round((selectedAssets.length / project.selectionLimit) * 100)
   );
 
-  const getCollageRowSpan = (asset: GalleryAsset) => {
-    const aspectRatio = asset.width && asset.height
-      ? asset.width / asset.height
-      : asset.category === 'portraits'
-        ? 0.75
-        : 4 / 3;
-
-    if (aspectRatio < 0.7) return 48; // Tall 9:16-style portraits.
-    if (aspectRatio < 0.95) return 38;
-    if (aspectRatio < 1.2) return 32;
-    if (aspectRatio < 1.55) return 26; // Standard 4:3 images.
-    return 20; // Wide candid frames.
+  const handleBulkJpegDownload = async () => {
+    if (selectedAssets.length === 0) return;
+    setIsBulkDownloading(true);
+    try {
+      for (const asset of selectedAssets) {
+        const res = await services.assetService.getJpegDownloadUrl(asset.id);
+        const link = document.createElement('a');
+        link.href = res.downloadUrl;
+        link.download = res.filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      setDownloadStatusMessage(`Started download for ${selectedAssets.length} selected images.`);
+    } catch (err: any) {
+      setDownloadStatusMessage(`Download error: ${err.message || 'Unable to download images'}`);
+    } finally {
+      setIsBulkDownloading(false);
+    }
   };
 
   return (
@@ -235,8 +247,8 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
         </div>
       </div>
 
-      {/* Filter Tabs Bar (Responsive Popover on Mobile, Tabs on Desktop) */}
-      <div className="flex items-center justify-between gap-4 border-b border-[#242424] pb-3 font-sans">
+      {/* Filter Tabs Bar (Responsive Popover on Mobile, Tabs on Desktop) & Actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#242424] pb-4 font-sans">
         {/* Mobile Filter Popover */}
         <div className="sm:hidden relative w-full">
           <button
@@ -299,7 +311,7 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
             <button
               key={tab.id}
               onClick={() => setFilterMode(tab.id as any)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors ${
+              className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors min-h-[36px] ${
                 filterMode === tab.id
                   ? 'bg-[#242424] text-white shadow-sm'
                   : 'text-[#8C8C8C] hover:text-white hover:bg-[#181818]'
@@ -309,36 +321,86 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
             </button>
           ))}
         </div>
+
+        {/* Download Selected JPEGs action */}
+        <button
+          type="button"
+          onClick={handleBulkJpegDownload}
+          disabled={isBulkDownloading || selectedAssets.length === 0}
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3.5 py-2 text-xs font-semibold text-[#D4AF37] transition-colors hover:bg-[#D4AF37]/20 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <Images className="h-4 w-4" />
+          {isBulkDownloading ? 'Preparing downloads…' : `Download selected JPEGs (${selectedAssets.length})`}
+        </button>
       </div>
 
-      {/* Aspect-aware collage of reviewed assets */}
+      {downloadStatusMessage && (
+        <div className="p-3 text-xs bg-[#121212] border border-[#27272A] rounded-lg text-white">
+          {downloadStatusMessage}
+        </div>
+      )}
+
+      {/* Uniform Responsive Grid of reviewed assets */}
       {displayedAssets.length === 0 ? (
         <div className="p-16 text-center text-[#8C8C8C] bg-[#121212] border border-[#242424] rounded-xl font-sans">
           <Camera className="w-10 h-10 mx-auto mb-3 opacity-40" />
           <p className="text-sm font-editorial text-white">No photographs in this filter category</p>
         </div>
       ) : (
-        <div className="grid auto-rows-[8px] grid-flow-dense grid-cols-2 gap-px font-sans sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5 lg:gap-6 font-sans">
           {displayedAssets.map((asset) => {
+            const isSelected = asset.isSelected;
             return (
-              <figure
+              <div
                 key={asset.id}
-                onClick={() => onOpenPhotoDetail(asset)}
-                className="group min-w-0 cursor-pointer overflow-hidden rounded-md bg-[#121212] transition-colors hover:bg-[#181818] focus-within:ring-2 focus-within:ring-[#D4AF37]"
-                style={{ gridRowEnd: `span ${getCollageRowSpan(asset)}` }}
+                className={`group relative overflow-hidden rounded-lg border transition-all duration-200 bg-[#080808] ${
+                  isSelected
+                    ? 'border-[#D4AF37] ring-1 ring-[#D4AF37]'
+                    : 'border-[#242424] hover:border-[#3f3f46]'
+                }`}
               >
-                <div className="h-[calc(100%-1.9rem)] overflow-hidden bg-[#080808]">
+                <div
+                  className="aspect-[4/3] bg-[#080808] relative overflow-hidden cursor-pointer"
+                  onClick={() => onOpenPhotoDetail(asset)}
+                >
                   <img
                     src={asset.previewUrl}
                     alt={asset.baseFilename}
                     referrerPolicy="no-referrer"
-                    className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                    className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${
+                      isSelected ? 'brightness-105' : ''
+                    }`}
                   />
+
+                  {/* Selection Indicator & Toggle Button */}
+                  {onToggleSelection && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleSelection(asset.id);
+                      }}
+                      aria-label={isSelected ? `Deselect ${asset.jpegFilename}` : `Select ${asset.jpegFilename}`}
+                      className={`absolute left-2.5 top-2.5 z-10 flex h-7 w-7 items-center justify-center rounded-md border transition-all duration-150 ${
+                        isSelected
+                          ? 'border-[#D4AF37] bg-[#D4AF37] text-black shadow-md'
+                          : 'border-white/40 bg-black/60 text-white opacity-0 group-hover:opacity-100 focus:opacity-100 hover:border-white'
+                      }`}
+                    >
+                      <Check className={`h-4 w-4 stroke-[2.5] ${isSelected ? 'text-black' : 'text-white'}`} />
+                    </button>
+                  )}
                 </div>
-                <figcaption className="truncate px-2 py-1.5 text-[10px] font-mono text-[#A1A1AA]" title={asset.jpegFilename}>
-                  {asset.jpegFilename}
-                </figcaption>
-              </figure>
+
+                <div className="flex items-center justify-between px-3 py-2 border-t border-[#1e1e1e] bg-[#0c0c0c]">
+                  <p className="truncate text-[11px] font-mono text-[#A1A1AA]">{asset.jpegFilename}</p>
+                  {isSelected && (
+                    <span className="ml-2 flex-shrink-0 text-[10px] font-semibold text-[#D4AF37] uppercase tracking-wider">
+                      Selected
+                    </span>
+                  )}
+                </div>
+              </div>
             );
           })}
         </div>

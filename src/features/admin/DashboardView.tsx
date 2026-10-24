@@ -135,8 +135,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       </div>
 
-      {/* Projects Management Section */}
-      <div className="bg-[#121212] border border-[#27272A] rounded-2xl overflow-hidden shadow-xl">
+      {/* Projects Management Section with border gap and sharp corners (rounded-none) */}
+      <div className="bg-[#121212] border border-[#27272A] rounded-none overflow-hidden shadow-xl">
         {/* Controls Bar */}
         <div className="p-5 sm:p-6 border-b border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="relative flex-1 max-w-md">
@@ -227,8 +227,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Project carousel */}
-        <div className="relative">
+        {/* Project carousel with border gap padding */}
+        <div className="relative p-5 sm:p-6 lg:p-7">
           {filteredProjects.length === 0 ? (
             <div className="p-16 text-center space-y-3">
               <IconProjectsFolio size={36} className="text-[#8C8C8C]/40 mx-auto" />
@@ -245,28 +245,39 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           ) : (
             <>
-              <div className="mb-3 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => scrollProjects('left')}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#27272A] bg-[#121212] text-[#A1A1AA] transition-colors hover:border-[#D4AF37]/50 hover:text-[#D4AF37] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
-                  aria-label="Previous projects"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => scrollProjects('right')}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#27272A] bg-[#121212] text-[#A1A1AA] transition-colors hover:border-[#D4AF37]/50 hover:text-[#D4AF37] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
-                  aria-label="Next projects"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-white">
+                    Client Galleries
+                  </span>
+                  <span className="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-mono font-medium rounded bg-[#0A0A0A] border border-[#27272A] text-[#D4AF37]">
+                    {filteredProjects.length}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => scrollProjects('left')}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#27272A] bg-[#0A0A0A] text-[#A1A1AA] transition-colors hover:border-[#D4AF37]/50 hover:text-[#D4AF37] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+                    aria-label="Previous projects"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollProjects('right')}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#27272A] bg-[#0A0A0A] text-[#A1A1AA] transition-colors hover:border-[#D4AF37]/50 hover:text-[#D4AF37] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+                    aria-label="Next projects"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
 
               <div
                 ref={projectCarouselRef}
-                className="flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden scroll-smooth pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="flex snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden scroll-smooth pb-1 pt-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                 aria-label="Projects carousel"
               >
             {filteredProjects.map((project) => {
@@ -316,7 +327,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   }}
                   role="button"
                   tabIndex={0}
-                  className="group relative aspect-[4/3] basis-full shrink-0 snap-start cursor-pointer overflow-hidden rounded-2xl border border-[#27272A] bg-[#121212] p-4 font-sans transition-colors hover:bg-[#151515] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] sm:basis-[calc((100%-1.25rem)/2)] sm:p-5"
+                  className="group relative aspect-[4/3] basis-full shrink-0 snap-start cursor-pointer overflow-hidden rounded-xl border border-[#27272A] bg-[#121212] p-4 font-sans transition-colors hover:bg-[#151515] hover:border-[#3F3F46] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] sm:basis-[calc((100%-1.5rem)/2)] sm:p-5"
                 >
                   <div className="absolute inset-x-4 top-3 flex justify-center sm:inset-x-5">
                     <div className="flex items-center gap-1.5 text-[10px] text-[#A1A1AA] font-mono sm:text-xs">

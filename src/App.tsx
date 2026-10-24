@@ -159,27 +159,51 @@ export default function App() {
     setCurrentView('selection_review');
   };
 
+  // Normalized Set of selected asset IDs for active project (single source of truth)
+  const selectedAssetIds = React.useMemo(() => {
+    const set = new Set<string>();
+    if (!selectedProject) return set;
+    assets.forEach((a) => {
+      if (a.projectId === selectedProject.id && a.isSelected) {
+        set.add(a.id);
+      }
+    });
+    return set;
+  }, [assets, selectedProject?.id]);
+
   const handleToggleSelection = async (assetId: string) => {
     if (!selectedProject) return;
     const target = assets.find((a) => a.id === assetId);
     if (!target) return;
 
+    const willSelect = !selectedAssetIds.has(assetId);
+
+    // Optimistic state update for instant UI feedback without race conditions
+    setAssets((prev) =>
+      prev.map((a) => (a.id === assetId ? { ...a, isSelected: willSelect } : a))
+    );
+
+    if (lightboxAsset && lightboxAsset.id === assetId) {
+      setLightboxAsset((prev) => (prev ? { ...prev, isSelected: willSelect } : null));
+    }
+
     try {
       await services.selectionService.toggleAssetSelection(
         selectedProject.id,
         assetId,
-        !target.isSelected
+        willSelect
       );
-      await refreshData();
-
-      // update current lightbox asset state if open
-      if (lightboxAsset && lightboxAsset.id === assetId) {
-        setLightboxAsset({
-          ...lightboxAsset,
-          isSelected: !target.isSelected,
-        });
-      }
+      // Synchronize canonical storage state
+      const freshAssets = await services.assetService.getAssetsByProject(selectedProject.id);
+      setAssets(freshAssets);
     } catch (err: any) {
+      // Revert optimistic update on failure
+      setAssets((prev) =>
+        prev.map((a) => (a.id === assetId ? { ...a, isSelected: !willSelect } : a))
+      );
+      if (lightboxAsset && lightboxAsset.id === assetId) {
+        setLightboxAsset((prev) => (prev ? { ...prev, isSelected: !willSelect } : null));
+      }
       showToast(err.message || 'Unable to update photo selection', 'error');
     }
   };
@@ -208,6 +232,7 @@ export default function App() {
                 onOpenProjectChat={() => setIsProjectChatOpen(true)}
                 onRefreshProject={refreshData}
                 onBackToStudio={handleExitClientPortal}
+                onToggleSelection={handleToggleSelection}
               />
             ) : (
               <div className="p-16 text-center text-[#A1A1AA] bg-[#121212] border border-[#27272A] rounded-2xl">
@@ -284,6 +309,7 @@ export default function App() {
                 onOpenSelectionReview={() => setCurrentView('selection_review')}
                 onRefreshAssets={refreshData}
                 isProjectSwitching={isProjectSwitching}
+                onToggleSelection={handleToggleSelection}
               />
             ) : currentView === 'selection_review' && selectedProject ? (
               <SelectionReviewView
@@ -295,6 +321,7 @@ export default function App() {
                 onOpenPhotoDetail={(asset) => setLightboxAsset(asset)}
                 onOpenClientPortal={handleOpenClientPortal}
                 isProjectSwitching={isProjectSwitching}
+                onToggleSelection={handleToggleSelection}
               />
             ) : (
               <div className="p-16 text-center text-[#A1A1AA] bg-[#121212] border border-[#27272A] rounded-2xl">
