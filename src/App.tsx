@@ -11,6 +11,7 @@ import { services } from './services/index.ts';
 import { GalleryPreloader } from './components/preloader/GalleryPreloader.tsx';
 import { Header, NavView } from './components/layout/Header.tsx';
 import { DashboardView } from './features/admin/DashboardView.tsx';
+import { ProjectsView } from './features/admin/ProjectsView.tsx';
 import { AssetManagerView } from './features/admin/AssetManagerView.tsx';
 import { SelectionReviewView } from './features/admin/SelectionReviewView.tsx';
 import { ProjectCreateModal } from './features/admin/ProjectCreateModal.tsx';
@@ -47,6 +48,7 @@ export default function App() {
   const [assets, setAssets] = useState<GalleryAsset[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isProjectSwitching, setIsProjectSwitching] = useState(false);
 
   // Modals & Panels
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
@@ -104,11 +106,19 @@ export default function App() {
   }, []);
 
   const handleProjectSelect = async (p: Project) => {
+    if (p.id === selectedProject?.id) return;
+    setIsProjectSwitching(true);
     setSelectedProject(p);
-    const aList = await services.assetService.getAssetsByProject(p.id);
-    setAssets(aList);
-    const mList = await services.messageService.getMessages(p.id);
-    setMessages(mList);
+    try {
+      const [aList, mList] = await Promise.all([
+        services.assetService.getAssetsByProject(p.id),
+        services.messageService.getMessages(p.id),
+      ]);
+      setAssets(aList);
+      setMessages(mList);
+    } finally {
+      setIsProjectSwitching(false);
+    }
   };
 
   const handleCreateProject = async (dto: CreateProjectDTO) => {
@@ -242,7 +252,7 @@ export default function App() {
           />
 
           <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
-            {currentView === 'dashboard' || currentView === 'projects' ? (
+            {currentView === 'dashboard' ? (
               <DashboardView
                 projects={projects}
                 assets={assets}
@@ -255,21 +265,36 @@ export default function App() {
                 onOpenAssetManager={handleOpenAssetManager}
                 onOpenSelectionReview={handleOpenSelectionReview}
               />
+            ) : currentView === 'projects' ? (
+              <ProjectsView
+                projects={projects}
+                assets={assets}
+                onOpenProject={(project) => {
+                  handleProjectSelect(project);
+                  setCurrentView('assets');
+                }}
+                onOpenNewProject={() => setIsNewProjectModalOpen(true)}
+              />
             ) : currentView === 'assets' && selectedProject ? (
               <AssetManagerView
                 project={selectedProject}
                 assets={assets}
-                onBack={() => setCurrentView('dashboard')}
+                projects={projects}
+                onSelectProject={handleProjectSelect}
+                onOpenSelectionReview={() => setCurrentView('selection_review')}
                 onRefreshAssets={refreshData}
+                isProjectSwitching={isProjectSwitching}
               />
             ) : currentView === 'selection_review' && selectedProject ? (
               <SelectionReviewView
                 project={selectedProject}
+                projects={projects}
                 assets={assets}
-                messages={messages}
-                onBack={() => setCurrentView('dashboard')}
+                onSelectProject={handleProjectSelect}
+                onOpenAssets={() => setCurrentView('assets')}
                 onOpenPhotoDetail={(asset) => setLightboxAsset(asset)}
                 onOpenClientPortal={handleOpenClientPortal}
+                isProjectSwitching={isProjectSwitching}
               />
             ) : (
               <div className="p-16 text-center text-[#A1A1AA] bg-[#121212] border border-[#27272A] rounded-2xl">

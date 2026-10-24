@@ -11,8 +11,6 @@ import { Menu, Plus } from 'lucide-react';
 import {
   IconStudioOverview,
   IconProjectsFolio,
-  IconRawAperture,
-  IconAlbumSelection,
   IconPlusProject,
 } from '../icons/BespokeIcons.tsx';
 
@@ -80,29 +78,6 @@ export const Header: React.FC<HeaderProps> = ({
               <span>Projects</span>
             </button>
 
-            <button
-              onClick={() => onNavigate('assets')}
-              className={`group inline-flex items-center gap-2.5 px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0 border transition-colors ${
-                currentView === 'assets'
-                  ? 'bg-[#181818] text-[#D4AF37] border-[#27272A]'
-                  : 'text-[#A1A1AA] hover:text-white hover:bg-[#121212] border-transparent'
-              }`}
-            >
-              <IconRawAperture size={17} className={currentView === 'assets' ? 'text-[#D4AF37]' : 'text-[#A1A1AA] group-hover:text-white'} />
-              <span>RAW &amp; Assets</span>
-            </button>
-
-            <button
-              onClick={() => onNavigate('selection_review')}
-              className={`group inline-flex items-center gap-2.5 px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0 border transition-colors ${
-                currentView === 'selection_review'
-                  ? 'bg-[#181818] text-[#D4AF37] border-[#27272A]'
-                  : 'text-[#A1A1AA] hover:text-white hover:bg-[#121212] border-transparent'
-              }`}
-            >
-              <IconAlbumSelection size={17} className={currentView === 'selection_review' ? 'text-[#D4AF37]' : 'text-[#A1A1AA] group-hover:text-white'} />
-              <span>Album Selections</span>
-            </button>
           </nav>
 
           {/* Zone 3: Actions + Mobile Hamburger */}

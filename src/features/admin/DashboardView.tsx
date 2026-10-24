@@ -3,20 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Project } from '../../types/project.ts';
 import { GalleryAsset } from '../../types/asset.ts';
-import { Search, ChevronDown, Check, SlidersHorizontal, ExternalLink, Calendar } from 'lucide-react';
+import { Search, ChevronDown, ChevronLeft, ChevronRight, Check, SlidersHorizontal, Calendar } from 'lucide-react';
 import { Popover } from '../../components/common/Popover.tsx';
 import { SharePlatformPopover } from '../../components/project/SharePlatformPopover.tsx';
-import {
-  IconRawAperture,
-  IconAlbumSelection,
-  IconShareCompass,
-  IconMonogramKey,
-  IconPlusProject,
-  IconProjectsFolio,
-} from '../../components/icons/BespokeIcons.tsx';
+import { IconShareCompass, IconPlusProject, IconProjectsFolio } from '../../components/icons/BespokeIcons.tsx';
 
 interface DashboardViewProps {
   projects: Project[];
@@ -31,15 +24,24 @@ interface DashboardViewProps {
 export const DashboardView: React.FC<DashboardViewProps> = ({
   projects,
   assets,
+  onOpenProject,
   onOpenNewProject,
-  onOpenAssetManager,
-  onOpenSelectionReview,
-  onOpenClientPortal,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [isStatusPopoverOpen, setIsStatusPopoverOpen] = useState(false);
   const [sharePopoverProjectId, setSharePopoverProjectId] = useState<string | null>(null);
+  const projectCarouselRef = useRef<HTMLDivElement>(null);
+
+  const scrollProjects = (direction: 'left' | 'right') => {
+    const carousel = projectCarouselRef.current;
+    if (!carousel) return;
+
+    carousel.scrollBy({
+      left: (direction === 'left' ? -1 : 1) * Math.max(280, carousel.clientWidth * 0.82),
+      behavior: 'smooth',
+    });
+  };
 
   // Compute metrics
   const totalProjects = projects.length;
@@ -225,8 +227,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Project List: Restructured Data Hierarchy & Responsive Flexbox (NO Client Portal CTA) */}
-        <div className="divide-y divide-[#1C1C1C]">
+        {/* Project carousel */}
+        <div className="relative">
           {filteredProjects.length === 0 ? (
             <div className="p-16 text-center space-y-3">
               <IconProjectsFolio size={36} className="text-[#8C8C8C]/40 mx-auto" />
@@ -242,7 +244,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </button>
             </div>
           ) : (
-            filteredProjects.map((project) => {
+            <>
+              <div className="mb-3 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => scrollProjects('left')}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#27272A] bg-[#121212] text-[#A1A1AA] transition-colors hover:border-[#D4AF37]/50 hover:text-[#D4AF37] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+                  aria-label="Previous projects"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollProjects('right')}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#27272A] bg-[#121212] text-[#A1A1AA] transition-colors hover:border-[#D4AF37]/50 hover:text-[#D4AF37] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+                  aria-label="Next projects"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div
+                ref={projectCarouselRef}
+                className="flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden scroll-smooth pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                aria-label="Projects carousel"
+              >
+            {filteredProjects.map((project) => {
               const projectAssets = assets.filter((a) => a.projectId === project.id);
               const selectedCount = projectAssets.filter((a) => a.isSelected).length;
               const quotaLimit = project.selectionLimit || 1;
@@ -281,137 +308,44 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               const activeStatusBadge = statusBadgeConfig[project.status] || statusBadgeConfig.awaiting_selection;
 
               return (
-                <div
+                <article
                   key={project.id}
-                  className="p-6 sm:p-7 hover:bg-[#151515]/90 transition-all flex flex-col xl:flex-row xl:items-center justify-between gap-6 font-sans group border-l-2 border-transparent hover:border-[#D4AF37]/60"
+                  onClick={() => onOpenProject?.(project)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') onOpenProject?.(project);
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  className="group relative aspect-[4/3] basis-full shrink-0 snap-start cursor-pointer overflow-hidden rounded-2xl border border-[#27272A] bg-[#121212] p-4 font-sans transition-colors hover:bg-[#151515] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] sm:basis-[calc((100%-1.25rem)/2)] sm:p-5"
                 >
-                  {/* Left: Project Identity, Meta, Preview & Quota */}
-                  <div className="space-y-4 min-w-0 flex-1">
-                    {/* Top Meta Strip: ID, Status Badge, Event Date */}
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      <span className="font-mono text-xs text-[#D4AF37] font-bold tracking-widest uppercase bg-[#D4AF37]/10 border border-[#D4AF37]/30 px-2.5 py-1 rounded-md">
-                        {project.id}
-                      </span>
-
-                      {/* Status Badge */}
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${activeStatusBadge.color}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${activeStatusBadge.dotColor}`} />
-                        <span>{activeStatusBadge.label}</span>
-                      </span>
-
-                      <span className="text-[#333333] font-mono">·</span>
-
-                      <div className="flex items-center gap-1.5 text-xs text-[#A1A1AA] font-mono">
-                        <Calendar className="w-3.5 h-3.5 text-[#71717A]" />
-                        <span>Event Date: {project.eventDate}</span>
-                      </div>
-                    </div>
-
-                    {/* Main Title & Description with Visual Assets Preview */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
-                      {/* Visual Asset Thumbnail Strip (If photos available) */}
-                      {projectAssets.length > 0 && (
-                        <div className="flex items-center -space-x-3 shrink-0">
-                          {projectAssets.slice(0, 3).map((asset, idx) => (
-                            <div
-                              key={asset.id}
-                              className="w-14 h-14 rounded-xl overflow-hidden border-2 border-[#1E1E22] bg-[#0A0A0A] shadow-md relative"
-                              style={{ zIndex: 3 - idx }}
-                            >
-                              <img
-                                src={asset.thumbnailUrl || asset.previewUrl}
-                                alt={asset.baseFilename}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
-                              />
-                            </div>
-                          ))}
-                          {projectAssets.length > 3 && (
-                            <div
-                              className="w-14 h-14 rounded-xl border-2 border-[#1E1E22] bg-[#181818] text-[#A1A1AA] text-[11px] font-mono font-semibold flex items-center justify-center shadow-md relative"
-                              style={{ zIndex: 0 }}
-                            >
-                              +{projectAssets.length - 3}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      <div className="min-w-0 flex-1">
-                        <h2 className="text-xl sm:text-2xl font-editorial font-bold text-white tracking-tight leading-snug group-hover:text-[#D4AF37] transition-colors">
-                          {project.clientName}
-                        </h2>
-                        <p className="text-xs sm:text-sm text-[#A1A1AA] mt-0.5 font-sans leading-relaxed">
-                          {project.name}
-                        </p>
-
-                        {/* Project Type Badges & PIN */}
-                        <div className="flex flex-wrap items-center gap-2 pt-1.5">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#181818] text-[#EDEDED] border border-[#27272A] tracking-wide">
-                            {project.packageName}
-                          </span>
-                          {project.isPinProtected && (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#141414] text-[#A1A1AA] border border-[#27272A]">
-                              <IconMonogramKey size={12} />
-                              <span>PIN: {project.sharePin || 'Secured'}</span>
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Quota Tracker with Progress Bar */}
-                    <div className="pt-1 flex flex-col sm:flex-row sm:items-center gap-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-36 sm:w-48 h-2 bg-[#181818] rounded-full overflow-hidden p-0.5 border border-[#27272A]">
-                          <div
-                            className="h-full bg-gradient-to-r from-[#D4AF37] to-[#C5A028] rounded-full transition-all duration-500"
-                            style={{ width: `${quotaPercent}%` }}
-                          />
-                        </div>
-                        <span className="font-mono text-xs font-semibold text-[#D4AF37] tabular-nums">
-                          {selectedCount} / {project.selectionLimit}
-                        </span>
-                        <span className="text-[11px] text-[#A1A1AA] font-mono">
-                          selected ({quotaPercent}%)
-                        </span>
-                      </div>
+                  <div className="absolute inset-x-4 top-3 flex justify-center sm:inset-x-5">
+                    <div className="flex items-center gap-1.5 text-[10px] text-[#A1A1AA] font-mono sm:text-xs">
+                      <Calendar className="h-3 w-3 text-[#71717A]" />
+                      <span>Event Date: {project.eventDate}</span>
                     </div>
                   </div>
 
-                  {/* Right: Actions */}
-                  <div className="flex flex-wrap items-center gap-2.5 shrink-0 pt-2 xl:pt-0">
-                    <button
-                      onClick={() => onOpenAssetManager(project)}
-                      className="group inline-flex items-center gap-2 px-3.5 py-2.5 text-xs text-[#A1A1AA] hover:text-white bg-[#121212] hover:bg-[#181818] border border-[#27272A] hover:border-[#3F3F46] rounded-xl transition-all min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
-                      title="Manage RAW and JPEG photo manifests"
-                    >
-                      <IconRawAperture size={15} />
-                      <span>RAW &amp; JPEG ({projectAssets.length})</span>
-                    </button>
+                  <div className="flex h-full flex-col pt-6">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h2 className="text-lg font-editorial font-bold leading-snug tracking-tight text-white transition-colors group-hover:text-[#D4AF37] sm:text-xl">
+                          {project.clientName}
+                        </h2>
+                        <div className="mt-1 flex items-center gap-2 text-[10px] font-mono sm:text-xs">
+                          <span className="font-semibold tracking-wider text-[#D4AF37]">{project.id}</span>
+                          <span className="text-[#4A4A4A]">·</span>
+                          <span className="font-semibold text-[#EDEDED]">{project.packageName}</span>
+                        </div>
+                      </div>
 
-                    <button
-                      onClick={() => onOpenSelectionReview(project)}
-                      className="group inline-flex items-center gap-2 px-3.5 py-2.5 text-xs text-white bg-[#1E1E22] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3F3F46] rounded-xl transition-all font-medium min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
-                      title="Review client album selections"
-                    >
-                      <IconAlbumSelection size={15} />
-                      <span>Review ({selectedCount})</span>
-                    </button>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${activeStatusBadge.color}`}>
+                          <span className={`h-1.5 w-1.5 rounded-full ${activeStatusBadge.dotColor}`} />
+                          <span>{activeStatusBadge.label}</span>
+                        </span>
 
-                    {onOpenClientPortal && (
-                      <button
-                        onClick={() => onOpenClientPortal(project)}
-                        className="group inline-flex items-center gap-2 px-3.5 py-2.5 text-xs text-[#EDEDED] hover:text-[#D4AF37] bg-[#141414] hover:bg-[#181818] border border-[#27272A] hover:border-[#D4AF37]/40 rounded-xl transition-all min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
-                        title="Open client proofing portal"
-                      >
-                        <ExternalLink className="w-3.5 h-3.5" />
-                        <span>Client Portal</span>
-                      </button>
-                    )}
-
-                    {/* Share Button: Directly triggers Platform Quick-Share Popover */}
-                    <div className="relative">
+                        {/* Share Button: Directly triggers Platform Quick-Share Popover */}
+                        <div className="relative">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -419,7 +353,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             sharePopoverProjectId === project.id ? null : project.id
                           );
                         }}
-                        className="group inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-xl transition-all shadow-md min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+                        className="inline-flex min-h-[32px] items-center gap-1.5 rounded-xl bg-[#D4AF37] px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-black shadow-md transition-all hover:bg-[#C5A028] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] sm:px-3"
                         title="Share direct client link via WhatsApp, Socials or Email"
                       >
                         <IconShareCompass size={15} />
@@ -434,11 +368,50 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                           align="right"
                         />
                       )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {projectAssets.length > 0 && (
+                      <div className="mt-auto flex items-center -space-x-2 pb-2">
+                        {projectAssets.slice(0, 3).map((asset, idx) => (
+                          <div
+                            key={asset.id}
+                            className="relative h-8 w-8 overflow-hidden rounded-lg border-2 border-[#1E1E22] bg-[#0A0A0A] shadow-md sm:h-10 sm:w-10"
+                            style={{ zIndex: 3 - idx }}
+                          >
+                            <img
+                              src={asset.thumbnailUrl || asset.previewUrl}
+                              alt={asset.baseFilename}
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="w-full border-t border-[#27272A] pt-2">
+                      <div className="mb-1 flex items-center justify-end text-[10px] font-mono text-[#A1A1AA]">
+                        <span className="font-semibold text-[#D4AF37]">{quotaPercent}% selected</span>
+                      </div>
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#181818] p-0.5">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-[#D4AF37] to-[#C5A028] transition-all duration-500"
+                          style={{ width: `${quotaPercent}%` }}
+                        />
+                      </div>
+                      <div className="mt-1 flex items-center justify-between text-[10px] font-mono text-[#A1A1AA]">
+                        <span>Total: {projectAssets.length} images</span>
+                        <span className="font-semibold text-[#EDEDED]">Selected: {selectedCount} images</span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </article>
               );
-            })
+            })}
+              </div>
+            </>
           )}
         </div>
       </div>

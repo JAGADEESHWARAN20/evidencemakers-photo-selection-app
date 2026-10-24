@@ -14,25 +14,36 @@ import {
   AlertTriangle,
   FileImage,
   HardDrive,
-  ArrowLeft,
   Download,
   Layers,
+  MoreVertical,
+  Search,
+  Images,
 } from 'lucide-react';
 
 interface AssetManagerViewProps {
   project: Project;
+  projects: Project[];
   assets: GalleryAsset[];
-  onBack: () => void;
+  onSelectProject: (project: Project) => void;
+  onOpenSelectionReview: () => void;
   onRefreshAssets: () => void;
+  isProjectSwitching: boolean;
 }
 
 export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
   project,
+  projects,
   assets,
-  onBack,
+  onSelectProject,
+  onOpenSelectionReview,
   onRefreshAssets,
+  isProjectSwitching,
 }) => {
-  const [filterMode, setFilterMode] = useState<'all' | 'paired' | 'jpeg_only' | 'raw_only'>('all');
+  const [filterMode, setFilterMode] = useState<'all' | 'selected' | 'unselected'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [openDownloadMenuAssetId, setOpenDownloadMenuAssetId] = useState<string | null>(null);
+  const [isBulkDownloading, setIsBulkDownloading] = useState(false);
   const [selectedUploadFiles, setSelectedUploadFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgressList, setUploadProgressList] = useState<UploadBatchItem[]>([]);
@@ -44,9 +55,19 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
   }, [assets, project.id]);
 
   const filteredAssets = useMemo(() => {
-    if (filterMode === 'all') return projectAssets;
-    return projectAssets.filter((a) => a.pairingStatus === filterMode);
-  }, [projectAssets, filterMode]);
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+    return projectAssets.filter((asset) => {
+      const matchesFilter =
+        filterMode === 'all' ||
+        (filterMode === 'selected' && asset.isSelected) ||
+        (filterMode === 'unselected' && !asset.isSelected);
+      const matchesSearch =
+        !normalizedQuery ||
+        asset.jpegFilename.toLowerCase().includes(normalizedQuery) ||
+        asset.baseFilename.toLowerCase().includes(normalizedQuery);
+      return matchesFilter && matchesSearch;
+    });
+  }, [projectAssets, filterMode, searchQuery]);
 
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -158,33 +179,86 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
     }
   };
 
+  const handleDownloadJpeg = async (asset: GalleryAsset) => {
+    try {
+      const res = await services.assetService.getJpegDownloadUrl(asset.id);
+      const link = document.createElement('a');
+      link.href = res.downloadUrl;
+      link.download = res.filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setStatusMessage(`Started JPEG download for ${res.filename}.`);
+    } catch (err: any) {
+      setStatusMessage(`JPEG download error: ${err.message || 'Unable to download asset'}`);
+    } finally {
+      setOpenDownloadMenuAssetId(null);
+    }
+  };
+
+  const handleBulkJpegDownload = async () => {
+    const selectedAssets = projectAssets.filter((asset) => asset.isSelected);
+    if (selectedAssets.length === 0) return;
+
+    setIsBulkDownloading(true);
+    try {
+      for (const asset of selectedAssets) {
+        const res = await services.assetService.getJpegDownloadUrl(asset.id);
+        const link = document.createElement('a');
+        link.href = res.downloadUrl;
+        link.download = res.filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      setStatusMessage(`Started ${selectedAssets.length} selected JPEG downloads.`);
+    } catch (err: any) {
+      setStatusMessage(`Bulk JPEG download error: ${err.message || 'Unable to download images'}`);
+    } finally {
+      setIsBulkDownloading(false);
+    }
+  };
+
   return (
     <div className="space-y-8 font-sans">
-      {/* Top Breadcrumb & Controls */}
+      {/* Project workspace controls */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#27272A] pb-6">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="p-2 text-[#A1A1AA] hover:text-white bg-[#121212] border border-[#27272A] rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
-            aria-label="Back to dashboard"
+        <div className="min-w-0">
+          <label htmlFor="project-switcher" className="mb-1 block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#D4AF37]">
+            Project workspace
+          </label>
+          <select
+            id="project-switcher"
+            value={project.id}
+            onChange={(event) => {
+              const nextProject = projects.find((candidate) => candidate.id === event.target.value);
+              if (nextProject) onSelectProject(nextProject);
+            }}
+            className="max-w-full rounded-lg border border-[#27272A] bg-[#121212] px-3 py-2 text-sm font-medium text-white outline-none transition-colors focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
           >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-sans text-xs text-[#D4AF37] font-medium">{project.id}</span>
-              <span className="text-[#333333]">·</span>
-              <h1 className="text-2xl sm:text-3xl font-editorial font-medium text-white">
-                RAW &amp; JPEG Asset Management
-              </h1>
-            </div>
-            <p className="text-xs text-[#A1A1AA] mt-0.5">
-              Project: <span className="text-white font-medium">{project.name}</span> · {project.clientName}
-            </p>
-          </div>
+            {projects.map((candidate) => (
+              <option key={candidate.id} value={candidate.id}>
+                {candidate.id} — {candidate.clientName}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1 text-xs text-[#A1A1AA]">{project.name} · {project.clientName}</p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex rounded-lg border border-[#27272A] bg-[#121212] p-1">
+            <button type="button" className="rounded-md bg-[#242424] px-3 py-1.5 text-xs font-medium text-white">
+              Images
+            </button>
+            <button
+              type="button"
+              onClick={onOpenSelectionReview}
+              className="rounded-md px-3 py-1.5 text-xs font-medium text-[#A1A1AA] transition-colors hover:text-white"
+            >
+              Album selections
+            </button>
+          </div>
+
           <button
             onClick={() => fileInputRef.current?.click()}
             className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
@@ -203,6 +277,17 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
         </div>
       </div>
 
+      {isProjectSwitching ? (
+        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl bg-[#242424] sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <div key={index} className="animate-pulse bg-[#121212] p-3">
+              <div className="aspect-[4/3] rounded-md bg-[#242424]" />
+              <div className="mt-2 h-3 w-2/3 rounded bg-[#242424]" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
       {/* Batch Staging & Pairing Engine Panel */}
       {selectedUploadFiles.length > 0 && stagedPairingSummary && (
         <div className="bg-[#121212] border border-[#D4AF37]/40 rounded-xl p-6 space-y-5">
@@ -298,19 +383,35 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
       {/* Asset Repository Overview */}
       <div className="bg-[#121212] border border-[#242424] rounded-lg overflow-hidden font-sans">
         {/* Filter Strip */}
-        <div className="p-4 sm:p-5 border-b border-[#242424] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-white">Project Assets</span>
-            <span className="text-xs text-[#8C8C8C]">
-              ({projectAssets.length} total photos registered)
-            </span>
+        <div className="border-b border-[#242424] p-4 sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="relative w-full sm:max-w-xs">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#71717A]" />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search filename"
+                className="w-full rounded-lg border border-[#27272A] bg-[#080808] py-2 pl-9 pr-3 text-xs text-white outline-none placeholder:text-[#71717A] focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={handleBulkJpegDownload}
+              disabled={isBulkDownloading || !projectAssets.some((asset) => asset.isSelected)}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-2 text-xs font-semibold text-[#D4AF37] transition-colors hover:bg-[#D4AF37]/20 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <Images className="h-4 w-4" />
+              {isBulkDownloading ? 'Preparing downloads…' : `Download selected JPEGs (${projectAssets.filter((asset) => asset.isSelected).length})`}
+            </button>
           </div>
 
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+          <div className="mt-4 flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
             {[
-              { id: 'all', label: 'All Assets' },
-              { id: 'paired', label: 'Paired (RAW+JPEG)' },
-              { id: 'jpeg_only', label: 'JPEG Only' },
+              { id: 'all', label: `All (${projectAssets.length})` },
+              { id: 'selected', label: `Selected (${projectAssets.filter((asset) => asset.isSelected).length})` },
+              { id: 'unselected', label: `Unselected (${projectAssets.filter((asset) => !asset.isSelected).length})` },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -335,82 +436,62 @@ export const AssetManagerView: React.FC<AssetManagerViewProps> = ({
               <p className="text-sm">No assets match the selected filter.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
               {filteredAssets.map((asset) => (
                 <div
                   key={asset.id}
-                  className="bg-[#080808] border border-[#242424] rounded-lg overflow-hidden group hover:border-[#333333] transition-colors flex flex-col"
+                  className="group overflow-hidden rounded-lg border border-[#242424] bg-[#080808] transition-colors hover:border-[#333333]"
                 >
-                  {/* Photo Thumbnail */}
                   <div className="aspect-[4/3] bg-[#080808] relative overflow-hidden">
                     <img
                       src={asset.previewUrl}
                       alt={asset.baseFilename}
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
-                    {asset.isSelected && (
-                      <div className="absolute top-2 right-2 px-2 py-0.5 bg-[#D4AF37] text-black text-[10px] font-bold rounded uppercase tracking-wider">
-                        Album Pick
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Metadata Card Footer */}
-                  <div className="p-3.5 space-y-2 flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-white truncate">
-                          {asset.baseFilename}
-                        </span>
-                        <span className="text-[10px] text-[#8C8C8C]">
-                          {asset.rawExtension || 'JPEG'}
-                        </span>
-                      </div>
-
-                      <div className="text-[11px] text-[#8C8C8C] mt-1 space-y-0.5">
-                        <div className="flex items-center justify-between">
-                          <span>Status:</span>
-                          <span
-                            className={
-                              asset.pairingStatus === 'paired'
-                                ? 'text-[#D4AF37] font-medium'
-                                : 'text-white'
-                            }
-                          >
-                            {asset.pairingStatus === 'paired' ? 'RAW Paired' : 'JPEG Only'}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span>RAW File:</span>
-                          <span className="truncate max-w-[120px] text-white">
-                            {asset.rawFilename || '—'}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span>RAW Size:</span>
-                          <span className="tabular-nums">{asset.rawFileSizeFormatted}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {asset.rawFilename && (
+                    <div className="absolute right-2 top-2">
                       <button
-                        onClick={() => handleDownloadRaw(asset)}
-                        className="w-full mt-2 inline-flex items-center justify-center gap-1.5 py-1.5 text-[11px] font-medium text-[#8C8C8C] hover:text-white bg-[#121212] hover:bg-[#181818] border border-[#242424] rounded transition-colors"
-                        title="Authorized short-lived presigned RAW download"
+                        type="button"
+                        onClick={() => setOpenDownloadMenuAssetId((current) => current === asset.id ? null : asset.id)}
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-black"
+                        aria-label={`Download options for ${asset.jpegFilename}`}
                       >
-                        <Download className="w-3 h-3 text-[#D4AF37]" />
-                        <span>Download RAW ({asset.rawExtension})</span>
+                        <MoreVertical className="h-4 w-4" />
                       </button>
-                    )}
+
+                      {openDownloadMenuAssetId === asset.id && (
+                        <div className="absolute right-0 top-10 z-10 w-40 rounded-lg border border-[#27272A] bg-[#121212] p-1 shadow-xl">
+                          <button
+                            type="button"
+                            onClick={() => handleDownloadJpeg(asset)}
+                            className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs text-white transition-colors hover:bg-[#242424]"
+                          >
+                            <Download className="h-3.5 w-3.5 text-[#D4AF37]" />
+                            Download JPEG
+                          </button>
+                          {asset.rawFilename && (
+                            <button
+                              type="button"
+                              onClick={() => handleDownloadRaw(asset)}
+                              className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs text-white transition-colors hover:bg-[#242424]"
+                            >
+                              <Download className="h-3.5 w-3.5 text-[#D4AF37]" />
+                              Download RAW
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
+                  <p className="truncate px-2.5 py-2 text-[11px] font-mono text-[#A1A1AA]">{asset.jpegFilename}</p>
                 </div>
               ))}
             </div>
           )}
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 };

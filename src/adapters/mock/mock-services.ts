@@ -208,6 +208,20 @@ export class MockAssetService implements IAssetService {
       expiresIn: 900, // 15 mins
     };
   }
+
+  public async getJpegDownloadUrl(assetId: string): Promise<{ downloadUrl: string; filename: string; expiresIn: number }> {
+    const asset = this.assets.find((a) => a.id === assetId);
+    if (!asset) {
+      throw new Error('Asset not found.');
+    }
+
+    // The production adapter replaces this with a Google Drive API download URL.
+    return {
+      downloadUrl: asset.previewUrl,
+      filename: asset.jpegFilename,
+      expiresIn: 900,
+    };
+  }
 }
 
 export class MockSelectionService implements ISelectionService {

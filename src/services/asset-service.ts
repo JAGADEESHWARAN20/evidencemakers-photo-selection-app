@@ -37,5 +37,6 @@ export interface IAssetService {
   requestPresignedUpload(dto: PresignedUploadUrlRequest): Promise<PresignedUploadUrlResponse>;
   registerAsset(dto: RegisterAssetDTO): Promise<GalleryAsset>;
   getRawDownloadUrl(assetId: string): Promise<{ downloadUrl: string; filename: string; expiresIn: number }>;
+  getJpegDownloadUrl(assetId: string): Promise<{ downloadUrl: string; filename: string; expiresIn: number }>;
   batchRegisterAssets(projectId: string, assets: RegisterAssetDTO[]): Promise<GalleryAsset[]>;
 }

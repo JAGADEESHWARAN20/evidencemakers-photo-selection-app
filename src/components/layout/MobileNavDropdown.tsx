@@ -10,8 +10,6 @@ import { BrandLogo } from '../brand/BrandLogo.tsx';
 import {
   IconStudioOverview,
   IconProjectsFolio,
-  IconRawAperture,
-  IconAlbumSelection,
   IconPlusProject,
 } from '../icons/BespokeIcons.tsx';
 
@@ -54,16 +52,6 @@ export const MobileNavDropdown: React.FC<MobileNavDropdownProps> = ({
       id: 'projects',
       label: 'Projects',
       icon: <IconProjectsFolio size={20} />,
-    },
-    {
-      id: 'assets',
-      label: 'RAW & Assets',
-      icon: <IconRawAperture size={20} />,
-    },
-    {
-      id: 'selection_review',
-      label: 'Album Selections',
-      icon: <IconAlbumSelection size={20} />,
     },
   ];
 

@@ -6,14 +6,9 @@
 import React, { useState, useMemo } from 'react';
 import { Project } from '../../types/project.ts';
 import { GalleryAsset } from '../../types/asset.ts';
-import { Message } from '../../types/message.ts';
-import { services } from '../../services/index.ts';
 import {
-  ArrowLeft,
   CheckCircle2,
   Clock,
-  MessageSquare,
-  Download,
   Camera,
   ExternalLink,
   BookOpen,
@@ -28,22 +23,26 @@ import { IconShareCompass } from '../../components/icons/BespokeIcons.tsx';
 
 interface SelectionReviewViewProps {
   project: Project;
+  projects: Project[];
   assets: GalleryAsset[];
-  messages: Message[];
-  onBack: () => void;
+  onSelectProject: (project: Project) => void;
+  onOpenAssets: () => void;
   onOpenPhotoDetail: (asset: GalleryAsset) => void;
   onOpenClientPortal: (project: Project) => void;
+  isProjectSwitching: boolean;
 }
 
 export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
   project,
+  projects,
   assets,
-  messages,
-  onBack,
+  onSelectProject,
+  onOpenAssets,
   onOpenPhotoDetail,
   onOpenClientPortal,
+  isProjectSwitching,
 }) => {
-  const [filterMode, setFilterMode] = useState<'selected' | 'all' | 'unselected' | 'commented'>('selected');
+  const [filterMode, setFilterMode] = useState<'selected' | 'all' | 'unselected'>('selected');
   const [isFilterPopoverOpen, setIsFilterPopoverOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
@@ -62,93 +61,77 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
     return projectAssets.filter((a) => a.isSelected);
   }, [projectAssets]);
 
-  const commentedAssets = useMemo(() => {
-    const commentedAssetIds = new Set(
-      messages.filter((m) => m.projectId === project.id && m.assetId).map((m) => m.assetId!)
-    );
-    return projectAssets.filter((a) => commentedAssetIds.has(a.id) || a.commentCount > 0);
-  }, [projectAssets, messages, project.id]);
-
   const displayedAssets = useMemo(() => {
     switch (filterMode) {
       case 'selected':
         return selectedAssets;
       case 'unselected':
         return projectAssets.filter((a) => !a.isSelected);
-      case 'commented':
-        return commentedAssets;
       default:
         return projectAssets;
     }
-  }, [filterMode, selectedAssets, projectAssets, commentedAssets]);
+  }, [filterMode, selectedAssets, projectAssets]);
 
   const progressPercent = Math.min(
     100,
     Math.round((selectedAssets.length / project.selectionLimit) * 100)
   );
 
-  const [downloadFeedback, setDownloadFeedback] = useState<string | null>(null);
+  const getCollageRowSpan = (asset: GalleryAsset) => {
+    const aspectRatio = asset.width && asset.height
+      ? asset.width / asset.height
+      : asset.category === 'portraits'
+        ? 0.75
+        : 4 / 3;
 
-  const handleDownloadRaw = async (asset: GalleryAsset, e: React.MouseEvent) => {
-    e.stopPropagation();
-    try {
-      const res = await services.assetService.getRawDownloadUrl(asset.id);
-      const link = document.createElement('a');
-      link.href = res.downloadUrl;
-      link.download = asset.rawFilename || `${asset.baseFilename}.cr3`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setDownloadFeedback(`Downloading RAW camera master for ${asset.baseFilename}`);
-      setTimeout(() => setDownloadFeedback(null), 3000);
-    } catch (err: any) {
-      setDownloadFeedback(`Download failed: ${err.message || 'Unable to download asset'}`);
-      setTimeout(() => setDownloadFeedback(null), 3500);
-    }
+    if (aspectRatio < 0.7) return 48; // Tall 9:16-style portraits.
+    if (aspectRatio < 0.95) return 38;
+    if (aspectRatio < 1.2) return 32;
+    if (aspectRatio < 1.55) return 26; // Standard 4:3 images.
+    return 20; // Wide candid frames.
   };
 
   return (
     <div className="space-y-8 font-sans">
-      {downloadFeedback && (
-        <div className="p-3 bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-xl text-xs text-[#D4AF37] flex items-center justify-between animate-in fade-in">
-          <div className="flex items-center gap-2">
-            <Download className="w-4 h-4" />
-            <span>{downloadFeedback}</span>
-          </div>
-          <button
-            onClick={() => setDownloadFeedback(null)}
-            className="text-white hover:text-[#D4AF37] text-xs font-medium"
-          >
-            Dismiss
-          </button>
-        </div>
-      )}
-
       {/* Header bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#27272A] pb-6">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="p-2 text-[#A1A1AA] hover:text-white bg-[#121212] border border-[#27272A] rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
-            aria-label="Back to dashboard"
+        <div className="min-w-0">
+          <label htmlFor="album-project-switcher" className="mb-1 block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#D4AF37]">
+            Project workspace
+          </label>
+          <select
+            id="album-project-switcher"
+            value={project.id}
+            onChange={(event) => {
+              const nextProject = projects.find((candidate) => candidate.id === event.target.value);
+              if (nextProject) onSelectProject(nextProject);
+            }}
+            className="max-w-full rounded-lg border border-[#27272A] bg-[#121212] px-3 py-2 text-sm font-medium text-white outline-none transition-colors focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
           >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-sans text-xs text-[#D4AF37] font-medium">{project.id}</span>
-              <span className="text-[#333333]">·</span>
-              <h1 className="text-2xl sm:text-3xl font-editorial font-medium text-white">
-                Album Selection &amp; Production Review
-              </h1>
-            </div>
-            <p className="text-xs text-[#A1A1AA] mt-0.5 font-sans">
-              Client: <span className="text-white font-medium">{project.clientName}</span> · Package: {project.packageName}
-            </p>
-          </div>
+            {projects.map((candidate) => (
+              <option key={candidate.id} value={candidate.id}>
+                {candidate.id} — {candidate.clientName}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1 text-xs text-[#A1A1AA]">{project.name} · {project.clientName}</p>
         </div>
 
-        <div className="relative">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex rounded-lg border border-[#27272A] bg-[#121212] p-1">
+            <button
+              type="button"
+              onClick={onOpenAssets}
+              className="rounded-md px-3 py-1.5 text-xs font-medium text-[#A1A1AA] transition-colors hover:text-white"
+            >
+              Images
+            </button>
+            <button type="button" className="rounded-md bg-[#242424] px-3 py-1.5 text-xs font-medium text-white">
+              Album selections
+            </button>
+          </div>
+
+          <div className="relative">
           <button
             type="button"
             onClick={() => setIsCopied(!isCopied)}
@@ -166,9 +149,21 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
               align="right"
             />
           )}
+          </div>
         </div>
       </div>
 
+      {isProjectSwitching ? (
+        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl bg-[#242424] sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <div key={index} className="animate-pulse bg-[#121212] p-3">
+              <div className="aspect-[4/3] rounded-md bg-[#242424]" />
+              <div className="mt-2 h-3 w-2/3 rounded bg-[#242424]" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
       {/* Quota Progress & Submission Status Banner */}
       <div className="bg-[#121212] border border-[#27272A] rounded-xl p-6 grid grid-cols-1 md:grid-cols-3 gap-6 font-sans">
         {/* Metric 1: Selection Progress */}
@@ -255,7 +250,6 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
               <span className="truncate">
                 {[
                   { id: 'selected', label: `Selected (${selectedAssets.length})` },
-                  { id: 'commented', label: `Has Comments (${commentedAssets.length})` },
                   { id: 'all', label: `All Photos (${projectAssets.length})` },
                   { id: 'unselected', label: `Unselected (${projectAssets.length - selectedAssets.length})` },
                 ].find((t) => t.id === filterMode)?.label || 'Filter Photos'}
@@ -272,7 +266,6 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
           >
             {[
               { id: 'selected', label: `Selected for Album (${selectedAssets.length})` },
-              { id: 'commented', label: `Has Comments (${commentedAssets.length})` },
               { id: 'all', label: `All Gallery Photos (${projectAssets.length})` },
               { id: 'unselected', label: `Unselected (${projectAssets.length - selectedAssets.length})` },
             ].map((tab) => (
@@ -300,7 +293,6 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
         <div className="hidden sm:flex items-center gap-2 overflow-x-auto">
           {[
             { id: 'selected', label: `Selected for Album (${selectedAssets.length})` },
-            { id: 'commented', label: `Has Comments (${commentedAssets.length})` },
             { id: 'all', label: `All Gallery Photos (${projectAssets.length})` },
             { id: 'unselected', label: `Unselected (${projectAssets.length - selectedAssets.length})` },
           ].map((tab) => (
@@ -319,100 +311,39 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
         </div>
       </div>
 
-      {/* Grid of Reviewed Assets */}
+      {/* Aspect-aware collage of reviewed assets */}
       {displayedAssets.length === 0 ? (
         <div className="p-16 text-center text-[#8C8C8C] bg-[#121212] border border-[#242424] rounded-xl font-sans">
           <Camera className="w-10 h-10 mx-auto mb-3 opacity-40" />
           <p className="text-sm font-editorial text-white">No photographs in this filter category</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 font-sans">
+        <div className="grid auto-rows-[8px] grid-flow-dense grid-cols-2 gap-px font-sans sm:grid-cols-3 lg:grid-cols-4">
           {displayedAssets.map((asset) => {
-            const assetComments = messages.filter(
-              (m) => m.projectId === project.id && m.assetId === asset.id
-            );
-
             return (
-              <div
+              <figure
                 key={asset.id}
                 onClick={() => onOpenPhotoDetail(asset)}
-                className="bg-[#121212] border border-[#242424] hover:border-[#D4AF37]/50 rounded-lg overflow-hidden transition-all cursor-pointer group flex flex-col justify-between"
+                className="group min-w-0 cursor-pointer overflow-hidden rounded-md bg-[#121212] transition-colors hover:bg-[#181818] focus-within:ring-2 focus-within:ring-[#D4AF37]"
+                style={{ gridRowEnd: `span ${getCollageRowSpan(asset)}` }}
               >
-                {/* Photo frame */}
-                <div className="aspect-[4/3] bg-[#080808] relative overflow-hidden">
+                <div className="h-[calc(100%-1.9rem)] overflow-hidden bg-[#080808]">
                   <img
                     src={asset.previewUrl}
                     alt={asset.baseFilename}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
                   />
-
-                  {/* Badges Overlay */}
-                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
-                    {asset.isSelected ? (
-                      <span className="px-2 py-0.5 bg-[#D4AF37] text-black text-[10px] font-bold rounded uppercase tracking-wider shadow">
-                        Selected for Album
-                      </span>
-                    ) : (
-                      <span className="px-2 py-0.5 bg-black/80 backdrop-blur-xs text-[#8C8C8C] text-[10px] rounded uppercase">
-                        Unselected
-                      </span>
-                    )}
-
-                    {assetComments.length > 0 && (
-                      <span className="px-2 py-0.5 bg-black/80 backdrop-blur-xs text-[#D4AF37] text-[10px] font-medium rounded flex items-center gap-1 shadow">
-                        <MessageSquare className="w-3 h-3" />
-                        {assetComments.length}
-                      </span>
-                    )}
-                  </div>
                 </div>
-
-                {/* Footer details */}
-                <div className="p-3.5 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-white truncate">
-                      {asset.baseFilename}
-                    </span>
-                    <span className="text-[10px] text-[#8C8C8C]">
-                      {asset.rawExtension ? `RAW: ${asset.rawExtension}` : 'JPEG'}
-                    </span>
-                  </div>
-
-                  <div className="text-[11px] text-[#8C8C8C] space-y-0.5">
-                    {asset.exif && (
-                      <div className="truncate text-[#8C8C8C]">
-                        {asset.exif.lens} · {asset.exif.aperture} · ISO {asset.exif.iso}
-                      </div>
-                    )}
-                  </div>
-
-                  {assetComments.length > 0 && (
-                    <div className="p-2 bg-[#080808] border border-[#242424] rounded text-[11px] text-[#8C8C8C] line-clamp-2">
-                      <span className="text-[#D4AF37] font-medium mr-1">
-                        {assetComments[assetComments.length - 1].senderName}:
-                      </span>
-                      <span className="text-white">
-                        {assetComments[assetComments.length - 1].text}
-                      </span>
-                    </div>
-                  )}
-
-                  {asset.rawFilename && (
-                    <button
-                      onClick={(e) => handleDownloadRaw(asset, e)}
-                      className="w-full mt-2 inline-flex items-center justify-center gap-1.5 py-1 text-[11px] text-[#8C8C8C] hover:text-white bg-[#080808] hover:bg-[#181818] border border-[#242424] rounded transition-colors"
-                      title="Download full uncompressed RAW file for editing"
-                    >
-                      <Download className="w-3 h-3 text-[#D4AF37]" />
-                      <span>Download RAW Negative</span>
-                    </button>
-                  )}
-                </div>
-              </div>
+                <figcaption className="truncate px-2 py-1.5 text-[10px] font-mono text-[#A1A1AA]" title={asset.jpegFilename}>
+                  {asset.jpegFilename}
+                </figcaption>
+              </figure>
             );
           })}
         </div>
+      )}
+        </>
       )}
     </div>
   );
