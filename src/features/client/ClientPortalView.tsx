@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { GalleryFilterPopover } from '../../components/gallery/GalleryFilterPopover.tsx';
 import { BrandLogo } from '../../components/brand/BrandLogo.tsx';
+import { ThemeToggle } from '../../context/ThemeContext.tsx';
 import { ClientOnboardingSequence } from './ClientOnboardingSequence.tsx';
 import { SwipeCuratorDeck } from './SwipeCuratorDeck.tsx';
 import {
@@ -331,13 +332,16 @@ export const ClientPortalView: React.FC<ClientPortalViewProps> = ({
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       className="space-y-8 sm:space-y-10 font-sans selection:bg-[#D4AF37]/30"
     >
-      {/* Standalone Client Top Bar: Single Primary Global Logo */}
-      <div className="flex items-center justify-between pb-6 border-b border-[#242424]">
+      {/* Standalone Client Top Bar: Single Primary Global Logo + Theme Toggle */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#242424]">
         <BrandLogo variant="horizontal" size="sm" />
-        <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-[#D4AF37] font-medium">
-          <span>{project.packageName}</span>
-          <span className="text-[#333333]">·</span>
-          <span className="text-[#8C8C8C]">{project.eventDate}</span>
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-2 text-xs uppercase tracking-widest text-[#D4AF37] font-medium">
+            <span>{project.packageName}</span>
+            <span className="text-[#333333]">·</span>
+            <span className="text-[#8C8C8C]">{project.eventDate}</span>
+          </div>
+          <ThemeToggle variant="segmented" />
         </div>
       </div>
 

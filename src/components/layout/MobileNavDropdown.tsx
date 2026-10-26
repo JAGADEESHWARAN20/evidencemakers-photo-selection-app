@@ -7,6 +7,7 @@ import React, { useEffect } from 'react';
 import { NavView } from './Header.tsx';
 import { Code2, X } from 'lucide-react';
 import { BrandLogo } from '../brand/BrandLogo.tsx';
+import { ThemeToggle } from '../../context/ThemeContext.tsx';
 import {
   IconStudioOverview,
   IconProjectsFolio,
@@ -76,7 +77,7 @@ export const MobileNavDropdown: React.FC<MobileNavDropdownProps> = ({
           </button>
         </div>
 
-        {/* Navigation Links (Clean labels, bespoke SVGs, NO subtext) */}
+        {/* Navigation Links */}
         <div className="space-y-2">
           {navItems.map((item) => {
             const isActive = currentView === item.id;
@@ -103,6 +104,12 @@ export const MobileNavDropdown: React.FC<MobileNavDropdownProps> = ({
               </button>
             );
           })}
+        </div>
+
+        {/* Theme Preference Selector */}
+        <div className="pt-4 border-t border-[#27272A] flex items-center justify-between">
+          <span className="text-xs font-medium text-[#A1A1AA]">Appearance Theme</span>
+          <ThemeToggle variant="segmented" />
         </div>
 
         {/* Actions Strip */}

@@ -21,6 +21,7 @@ import { ProjectChatDrawer } from './features/chat/ProjectChatDrawer.tsx';
 import { ApiDocsModal } from './features/docs/ApiDocsModal.tsx';
 import { CreateProjectDTO } from './services/project-service.ts';
 import { BrandLogo } from './components/brand/BrandLogo.tsx';
+import { ThemeProvider } from './context/ThemeContext.tsx';
 import { ArrowLeft, Shield, AlertCircle, CheckCircle2, X } from 'lucide-react';
 
 const getInitialPortalToken = () => {
@@ -211,11 +212,12 @@ export default function App() {
   const isClientPortalMode = activeRole === 'client' || currentView === 'client_portal';
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col font-sans selection:bg-[#D4AF37]/30">
-      {/* 1. Branded Preloader Initialization (Only on initial load) */}
-      {!isInitialized && (
-        <GalleryPreloader onComplete={() => setIsInitialized(true)} />
-      )}
+    <ThemeProvider>
+      <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col font-sans selection:bg-[#D4AF37]/30 transition-colors duration-200">
+        {/* 1. Branded Preloader Initialization (Only on initial load) */}
+        {!isInitialized && (
+          <GalleryPreloader onComplete={() => setIsInitialized(true)} />
+        )}
 
       {/* 2. Decoupled Routing: Standalone Client Portal vs. Studio Admin Workspace */}
       {isClientPortalMode ? (
@@ -403,6 +405,7 @@ export default function App() {
           </button>
         </div>
       )}
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }

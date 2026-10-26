@@ -7,7 +7,8 @@ import React, { useState } from 'react';
 import { BrandLogo } from '../brand/BrandLogo.tsx';
 import { Project } from '../../types/project.ts';
 import { MobileNavDropdown } from './MobileNavDropdown.tsx';
-import { Menu, Plus } from 'lucide-react';
+import { ThemeToggle } from '../../context/ThemeContext.tsx';
+import { Menu } from 'lucide-react';
 import {
   IconStudioOverview,
   IconProjectsFolio,
@@ -48,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
 
-          {/* Zone 2: Studio Admin Navigation (Clean labels + Bespoke Animated SVGs, NO subtext, NO active project selector) */}
+          {/* Zone 2: Studio Admin Navigation */}
           <nav
             aria-label="Main Navigation"
             className="hidden md:flex items-center gap-2 lg:gap-3 text-xs lg:text-sm font-medium tracking-wide"
@@ -76,11 +77,14 @@ export const Header: React.FC<HeaderProps> = ({
               <IconProjectsFolio size={17} className={currentView === 'projects' ? 'text-[#D4AF37]' : 'text-[#A1A1AA] group-hover:text-white'} />
               <span>Projects</span>
             </button>
-
           </nav>
 
-          {/* Zone 3: Actions + Mobile Hamburger */}
-          <div className="flex items-center gap-3 shrink-0">
+          {/* Zone 3: Theme Toggle + Actions + Mobile Hamburger */}
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+            {/* Global Dark / Light Theme Switcher */}
+            <ThemeToggle variant="segmented" className="hidden sm:inline-flex" />
+            <ThemeToggle variant="compact" className="sm:hidden" />
+
             {/* Desktop API Docs trigger */}
             <button
               onClick={onOpenApiDocs}

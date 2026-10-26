@@ -4,19 +4,24 @@
  */
 
 import React, { useState } from 'react';
+import { useTheme } from '../../context/ThemeContext.tsx';
 
 interface BrandLogoProps {
   className?: string;
   variant?: 'horizontal' | 'vertical' | 'mark-only';
   size?: 'sm' | 'md' | 'lg' | 'xl';
+  forceDark?: boolean;
 }
 
 export const BrandLogo: React.FC<BrandLogoProps> = ({
   className = '',
   variant = 'horizontal',
   size = 'md',
+  forceDark = false,
 }) => {
   const [imgError, setImgError] = useState(false);
+  const { isLight } = useTheme();
+  const useLightLogo = isLight && !forceDark;
 
   const dimensions = {
     sm: { height: 'h-7', imgHeight: 28 },
@@ -25,8 +30,8 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     xl: { height: 'h-24', imgHeight: 96 },
   }[size];
 
-  // Primary official brand logo asset from public folder
-  const logoSrc = '/logo-evidencemakers.png';
+  // Primary official brand logo assets from public folder (Dark vs Light mode)
+  const logoSrc = useLightLogo ? '/lightmode.png' : '/logo-evidencemakers.png';
 
   if (!imgError) {
     if (variant === 'vertical') {
@@ -36,7 +41,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
             src={logoSrc}
             alt="Evidence Makers Studio"
             onError={() => setImgError(true)}
-            className={`${dimensions.height} w-auto object-contain select-none`}
+            className={`${dimensions.height} w-auto object-contain select-none transition-opacity duration-200`}
             loading="eager"
           />
         </div>
@@ -64,7 +69,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           src={logoSrc}
           alt="Evidence Makers"
           onError={() => setImgError(true)}
-          className={`${dimensions.height} w-auto object-contain select-none`}
+          className={`${dimensions.height} w-auto object-contain select-none transition-opacity duration-200`}
           loading="eager"
         />
       </div>
@@ -93,7 +98,11 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       </svg>
       {variant !== 'mark-only' && (
         <div className="flex flex-col leading-none">
-          <span className="font-editorial text-lg tracking-[0.16em] text-white font-semibold uppercase">
+          <span
+            className={`font-editorial text-lg tracking-[0.16em] font-semibold uppercase ${
+              useLightLogo ? 'text-[#141413]' : 'text-white'
+            }`}
+          >
             Evidence Makers
           </span>
           <span className="text-[9px] tracking-[0.24em] text-[#A1A1AA] uppercase font-sans mt-0.5">
@@ -104,3 +113,4 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     </div>
   );
 };
+
