@@ -67,13 +67,13 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
     </div>
 
     {projects.length === 0 ? (
-      <div className="rounded-none border border-[#27272A] bg-[#121212] p-16 text-center">
+      <div className="rounded-2xl border border-[#27272A] bg-[#121212] p-10 sm:p-16 text-center">
         <FolderOpen className="mx-auto h-10 w-10 text-[#8C8C8C]/40" />
         <h2 className="mt-3 text-lg font-editorial text-white">No projects yet</h2>
         <p className="mt-1 text-sm text-[#8C8C8C]">Create your first client gallery to begin.</p>
       </div>
     ) : (
-      <div className="overflow-hidden rounded-none border border-[#27272A] bg-[#121212]">
+      <div className="overflow-hidden rounded-2xl border border-[#27272A] bg-[#121212] shadow-xl">
         {/* Table Column Headers (Desktop) */}
         <div className="hidden md:grid md:grid-cols-[minmax(0,1.8fr)_140px_minmax(180px,1.2fr)_160px_32px] items-center gap-6 border-b border-[#27272A] bg-[#0c0c0c] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#71717A]">
           <div>Project &amp; Client</div>

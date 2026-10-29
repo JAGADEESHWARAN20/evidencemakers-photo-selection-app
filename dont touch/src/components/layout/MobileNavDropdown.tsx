@@ -61,16 +61,16 @@ export const MobileNavDropdown: React.FC<MobileNavDropdownProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label="Mobile Navigation Menu"
-      className="fixed inset-0 z-50 flex flex-col justify-start bg-black/80 backdrop-blur-md font-sans md:hidden animate-in fade-in duration-150"
+      className="brand-mobile-overlay fixed inset-0 z-50 flex flex-col justify-start font-sans md:hidden animate-in fade-in duration-150"
     >
-      <div className="bg-[#0A0A0A] border-b border-[#27272A] shadow-2xl p-5 space-y-6 max-h-[90vh] overflow-y-auto">
+      <div className="brand-mobile-panel space-y-6 max-h-[92vh] overflow-y-auto">
         {/* Top Header of Mobile Menu with Single Primary Brand Logo */}
         <div className="flex items-center justify-between border-b border-[#27272A] pb-4">
           <BrandLogo variant="horizontal" size="sm" />
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-[#A1A1AA] hover:text-white bg-[#121212] border border-[#27272A] rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+          className="brand-icon-button"
             aria-label="Close navigation menu"
           >
             <X className="w-5 h-5" />
@@ -89,11 +89,8 @@ export const MobileNavDropdown: React.FC<MobileNavDropdownProps> = ({
                   onNavigate(item.id);
                   onClose();
                 }}
-                className={`group w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-left transition-all min-h-[50px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] ${
-                  isActive
-                    ? 'bg-[#181818] border border-[#D4AF37]/40 text-[#D4AF37] font-semibold'
-                    : 'hover:bg-[#121212] border border-transparent text-[#A1A1AA] hover:text-white font-medium'
-                }`}
+                aria-current={isActive ? 'page' : undefined}
+                className="brand-mobile-nav-link group"
               >
                 <div className={`shrink-0 ${isActive ? 'text-[#D4AF37]' : 'text-[#A1A1AA] group-hover:text-white'}`}>
                   {item.icon}
@@ -120,7 +117,7 @@ export const MobileNavDropdown: React.FC<MobileNavDropdownProps> = ({
               onClose();
               onOpenNewProject();
             }}
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 text-xs font-semibold uppercase tracking-wider text-black bg-[#D4AF37] hover:bg-[#C5A028] rounded-xl transition-all shadow-md min-h-[46px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+            className="brand-button brand-button--primary w-full"
           >
             <IconPlusProject size={15} />
             <span>Create New Project</span>
@@ -132,7 +129,7 @@ export const MobileNavDropdown: React.FC<MobileNavDropdownProps> = ({
               onClose();
               onOpenApiDocs();
             }}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-medium text-[#A1A1AA] hover:text-white bg-[#121212] hover:bg-[#181818] border border-[#27272A] rounded-xl transition-colors min-h-[42px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+            className="brand-button brand-button--quiet w-full"
           >
             <Code2 className="w-4 h-4 text-[#D4AF37]" />
             <span>API Integration Specifications</span>

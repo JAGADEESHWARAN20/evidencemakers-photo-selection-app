@@ -36,13 +36,13 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-[#0A0A0A]/95 backdrop-blur-md border-b border-[#27272A] transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4 sm:gap-8">
+      <header className="brand-header sticky top-0 z-40 w-full">
+        <div className="brand-header__inner max-w-7xl mx-auto flex items-center justify-between">
           {/* Zone 1: Single Primary Global Brand Wordmark */}
           <div className="flex items-center gap-4 shrink-0">
             <button
               onClick={() => onNavigate('dashboard')}
-              className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] rounded p-1 text-left shrink-0 transition-opacity hover:opacity-90"
+              className="brand-logo-button text-left shrink-0"
               aria-label="Evidence Makers Studio Home"
             >
               <BrandLogo variant="horizontal" size="md" />
@@ -52,29 +52,23 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Zone 2: Studio Admin Navigation */}
           <nav
             aria-label="Main Navigation"
-            className="hidden md:flex items-center gap-2 lg:gap-3 text-xs lg:text-sm font-medium tracking-wide"
+            className="hidden md:flex items-center gap-1 text-sm font-medium"
           >
             <button
               onClick={() => onNavigate('dashboard')}
-              className={`group inline-flex items-center gap-2.5 px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0 border transition-colors ${
-                currentView === 'dashboard'
-                  ? 'bg-[#181818] text-[#D4AF37] border-[#27272A]'
-                  : 'text-[#A1A1AA] hover:text-white hover:bg-[#121212] border-transparent'
-              }`}
+              aria-current={currentView === 'dashboard' ? 'page' : undefined}
+              className="brand-nav-link group"
             >
-              <IconStudioOverview size={17} className={currentView === 'dashboard' ? 'text-[#D4AF37]' : 'text-[#A1A1AA] group-hover:text-white'} />
+
               <span>Dashboard</span>
             </button>
 
             <button
               onClick={() => onNavigate('projects')}
-              className={`group inline-flex items-center gap-2.5 px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0 border transition-colors ${
-                currentView === 'projects'
-                  ? 'bg-[#181818] text-[#D4AF37] border-[#27272A]'
-                  : 'text-[#A1A1AA] hover:text-white hover:bg-[#121212] border-transparent'
-              }`}
+              aria-current={currentView === 'projects' ? 'page' : undefined}
+              className="brand-nav-link group"
             >
-              <IconProjectsFolio size={17} className={currentView === 'projects' ? 'text-[#D4AF37]' : 'text-[#A1A1AA] group-hover:text-white'} />
+
               <span>Projects</span>
             </button>
           </nav>
@@ -82,13 +76,12 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Zone 3: Theme Toggle + Actions + Mobile Hamburger */}
           <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
             {/* Global Dark / Light Theme Switcher */}
-            <ThemeToggle variant="segmented" className="hidden sm:inline-flex" />
-            <ThemeToggle variant="compact" className="sm:hidden" />
+            <ThemeToggle variant="segmented" className="hidden md:inline-flex" />
 
             {/* Desktop API Docs trigger */}
             <button
               onClick={onOpenApiDocs}
-              className="hidden sm:inline-flex items-center px-3.5 py-2 text-xs font-medium text-[#A1A1AA] hover:text-white bg-[#121212] hover:bg-[#181818] border border-[#27272A] rounded-lg transition-colors whitespace-nowrap shrink-0 min-h-[40px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+              className="brand-button brand-button--quiet hidden lg:inline-flex"
               title="View production backend integration specifications"
             >
               API Integration
@@ -98,11 +91,11 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden p-2.5 text-[#A1A1AA] hover:text-white bg-[#121212] hover:bg-[#181818] border border-[#27272A] rounded-lg transition-colors flex items-center justify-center min-w-[44px] min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+              className="brand-icon-button md:hidden"
               aria-label="Open mobile navigation menu"
               aria-expanded={isMobileMenuOpen}
             >
-              <Menu className="w-5 h-5 text-white" />
+              <Menu className="w-5 h-5" />
             </button>
           </div>
         </div>

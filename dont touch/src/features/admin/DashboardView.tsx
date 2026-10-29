@@ -16,9 +16,6 @@ interface DashboardViewProps {
   assets: GalleryAsset[];
   onOpenProject?: (project: Project) => void;
   onOpenNewProject: () => void;
-  onOpenAssetManager: (project: Project) => void;
-  onOpenSelectionReview: (project: Project) => void;
-  onOpenClientPortal?: (project: Project) => void;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -64,7 +61,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   }, [projects, searchQuery, statusFilter]);
 
   return (
-    <div className="space-y-10 font-sans selection:bg-[#D4AF37]/30">
+    <div className="space-y-8 font-sans selection:bg-[#D4AF37]/30">
       {/* Studio Header & Stats Row */}
       <div className="space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b border-[#27272A] pb-6">
@@ -89,7 +86,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* 4-Column KPI Strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           <div className="bg-[#121212] border border-[#27272A] rounded-xl p-5 sm:p-6 space-y-2">
             <span className="text-xs text-[#A1A1AA] tracking-wider uppercase font-medium">
               Total Projects
@@ -135,8 +132,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       </div>
 
-      {/* Projects Management Section with border gap and sharp corners (rounded-none) */}
-      <div className="bg-[#121212] border border-[#27272A] rounded-none overflow-hidden shadow-xl">
+      {/* Projects management */}
+      <div className="bg-[#121212] border border-[#27272A] rounded-2xl overflow-hidden shadow-xl">
         {/* Controls Bar */}
         <div className="p-5 sm:p-6 border-b border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="relative flex-1 max-w-md">

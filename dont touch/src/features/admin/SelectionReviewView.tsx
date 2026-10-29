@@ -5,6 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Project } from '../../types/project.ts';
+import { ProjectSwitcher } from '../../components/project/ProjectSwitcher.tsx';
 import { GalleryAsset } from '../../types/asset.ts';
 import { services } from '../../services/index.ts';
 import {
@@ -108,24 +109,7 @@ export const SelectionReviewView: React.FC<SelectionReviewViewProps> = ({
       {/* Header bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#27272A] pb-6">
         <div className="min-w-0">
-          <label htmlFor="album-project-switcher" className="mb-1 block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#D4AF37]">
-            Project workspace
-          </label>
-          <select
-            id="album-project-switcher"
-            value={project.id}
-            onChange={(event) => {
-              const nextProject = projects.find((candidate) => candidate.id === event.target.value);
-              if (nextProject) onSelectProject(nextProject);
-            }}
-            className="max-w-full rounded-lg border border-[#27272A] bg-[#121212] px-3 py-2 text-sm font-medium text-white outline-none transition-colors focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-          >
-            {projects.map((candidate) => (
-              <option key={candidate.id} value={candidate.id}>
-                {candidate.id} — {candidate.clientName}
-              </option>
-            ))}
-          </select>
+          <ProjectSwitcher project={project} projects={projects} onSelectProject={onSelectProject} />
           <p className="mt-1 text-xs text-[#A1A1AA]">{project.name} · {project.clientName}</p>
         </div>
 

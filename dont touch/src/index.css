@@ -1,0 +1,361 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "GFS Didot", "Didot", "Bodoni Moda", serif;
+  --font-sans: "Bodoni Moda", "Bodoni MT", "GFS Didot", serif;
+  --font-mono: "Bodoni Moda", "Bodoni MT", "GFS Didot", serif;
+  --font-editorial: "GFS Didot", "Didot", "Bodoni Moda", serif;
+
+  /* 1. Brand Gold Accent */
+  --color-brand-gold: #B68B32;
+  --color-brand-gold-hover: #9B7225;
+  --color-brand-gold-glow: rgba(182, 139, 50, 0.22);
+  --color-brand-gold-muted: rgba(182, 139, 50, 0.12);
+
+  /* 2. Background & Surfaces */
+  --color-brand-bg: #0A0A0A;
+  --color-brand-surface: #121212;
+  --color-brand-elevated: #181818;
+
+  /* 3. Typography Colors */
+  --color-brand-text: #FFFFFF;
+  --color-brand-muted: #A1A1AA;
+
+  /* 4. Borders & Dividers */
+  --color-brand-border: #27272A;
+  --color-brand-border-subtle: #1E1E22;
+
+  /* 5. Destructive / Error */
+  --color-brand-error: #EF4444;
+}
+
+:root,
+html[data-theme="dark"] {
+  --theme-bg: #0E0D0B;
+  --theme-bg-alt: #0A0908;
+  --theme-surface: #171511;
+  --theme-surface-elevated: #211E18;
+  --theme-surface-muted: #2A261E;
+  --theme-border: #373126;
+  --theme-border-subtle: #29251E;
+  --theme-text: #F7F0E5;
+  --theme-text-secondary: #BDB3A4;
+  --theme-text-muted: #8D8478;
+  --theme-gold: #D6B568;
+  --theme-gold-hover: #E2C67F;
+  --theme-gold-contrast: #17120A;
+  --theme-overlay: rgba(10, 9, 8, 0.76);
+  --theme-shadow: 0 18px 55px rgba(0, 0, 0, 0.3);
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  --theme-bg: #F8F4EC;
+  --theme-bg-alt: #F1EADF;
+  --theme-surface: #FFFCF7;
+  --theme-surface-elevated: #F5EEE2;
+  --theme-surface-muted: #EDE3D4;
+  --theme-border: #D8CCBA;
+  --theme-border-subtle: #E8DFD2;
+  --theme-text: #221E18;
+  --theme-text-secondary: #655C50;
+  --theme-text-muted: #857B6E;
+  --theme-gold: #966D22;
+  --theme-gold-hover: #7E5818;
+  --theme-gold-contrast: #FFF9ED;
+  --theme-overlay: rgba(34, 30, 24, 0.46);
+  --theme-shadow: 0 18px 55px rgba(71, 53, 30, 0.12);
+  color-scheme: light;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-optical-sizing: auto;
+  }
+
+  button, input, select, textarea, option, optgroup {
+    font-family: inherit;
+  }
+
+  code, pre, kbd, samp {
+    font-family: var(--font-mono);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--theme-bg);
+    color: var(--theme-text);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-size: 16px;
+    line-height: 1.55;
+    letter-spacing: 0.005em;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-editorial {
+    font-family: var(--font-serif);
+    letter-spacing: -0.018em;
+    text-wrap: balance;
+  }
+
+  button, input, select, textarea {
+    font-size: max(16px, 1em);
+  }
+
+  /* Consistent focus-visible ring across all interactive controls */
+  *:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--theme-bg), 0 0 0 4px var(--theme-gold);
+  }
+}
+
+/* Evidence Makers design system */
+.brand-app-shell {
+  color: var(--theme-text);
+  background:
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--theme-gold) 7%, transparent), transparent 28rem),
+    var(--theme-bg);
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+.brand-main { padding: clamp(1.25rem, 3vw, 3rem) clamp(1rem, 3.5vw, 3rem); }
+.brand-footer { padding: 2rem clamp(1rem, 3.5vw, 3rem); color: var(--theme-text-secondary); border-top: 1px solid var(--theme-border); }
+.brand-header { color: var(--theme-text); background: color-mix(in srgb, var(--theme-bg) 90%, transparent); border-bottom: 1px solid var(--theme-border); backdrop-filter: blur(18px); }
+.brand-header__inner { min-height: 4.5rem; gap: 1rem; padding: 0.75rem clamp(1rem, 3vw, 2rem); }
+.brand-logo-button { border-radius: 0.65rem; transition: opacity 160ms ease; }
+.brand-logo-button:hover { opacity: 0.82; }
+
+.brand-nav-link,
+.brand-mobile-nav-link,
+.brand-button,
+.brand-icon-button,
+.theme-toggle-compact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.brand-nav-link { gap: 0.55rem; min-height: 2.65rem; padding: 0.6rem 0.9rem; border-radius: 0.65rem; color: var(--theme-text-secondary); white-space: nowrap; }
+.brand-nav-link:hover { color: var(--theme-text); background: var(--theme-surface); }
+.brand-nav-link[aria-current="page"] { color: var(--theme-gold); background: var(--theme-surface); border-color: var(--theme-border); }
+.brand-mobile-nav-link { width: 100%; min-height: 3.25rem; justify-content: flex-start; gap: 0.9rem; padding: 0.8rem 1rem; border-radius: 0.75rem; color: var(--theme-text-secondary); text-align: left; }
+.brand-mobile-nav-link:hover { color: var(--theme-text); background: var(--theme-surface-elevated); }
+.brand-mobile-nav-link[aria-current="page"] { color: var(--theme-gold); background: color-mix(in srgb, var(--theme-gold) 10%, transparent); border-color: color-mix(in srgb, var(--theme-gold) 35%, transparent); }
+.brand-button { min-height: 2.65rem; gap: 0.5rem; padding: 0.65rem 1rem; border-radius: 0.7rem; font-size: 0.78rem; font-weight: 650; letter-spacing: 0.06em; }
+.brand-button--primary { color: var(--theme-gold-contrast); background: var(--theme-gold); box-shadow: 0 8px 22px color-mix(in srgb, var(--theme-gold) 22%, transparent); text-transform: uppercase; }
+.brand-button--primary:hover { background: var(--theme-gold-hover); transform: translateY(-1px); }
+.brand-button--quiet { color: var(--theme-text-secondary); background: var(--theme-surface); border-color: var(--theme-border); }
+.brand-button--quiet:hover { color: var(--theme-text); background: var(--theme-surface-elevated); }
+.brand-icon-button { width: 2.75rem; height: 2.75rem; flex-shrink: 0; border-radius: 0.7rem; color: var(--theme-text-secondary); background: var(--theme-surface); border-color: var(--theme-border); }
+.brand-icon-button:hover { color: var(--theme-text); background: var(--theme-surface-elevated); }
+.brand-mobile-overlay { background: var(--theme-overlay); backdrop-filter: blur(10px); }
+.brand-mobile-panel { padding: 1.25rem; color: var(--theme-text); background: var(--theme-bg); border-bottom: 1px solid var(--theme-border); box-shadow: var(--theme-shadow); }
+
+.theme-toggle { display: inline-flex; align-items: center; gap: 0.15rem; padding: 0.25rem; border: 1px solid var(--theme-border); border-radius: 0.7rem; background: var(--theme-surface); }
+.theme-toggle__option { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.7rem; border-radius: 0.5rem; color: var(--theme-text-secondary); font-size: 0.75rem; font-weight: 600; transition: color 160ms ease, background 160ms ease; }
+.theme-toggle__option:hover { color: var(--theme-text); }
+.theme-toggle__option[aria-pressed="true"] { color: var(--theme-gold); background: var(--theme-surface-elevated); box-shadow: 0 1px 4px color-mix(in srgb, var(--theme-text) 10%, transparent); }
+.theme-toggle-compact { min-height: 2.65rem; gap: 0.5rem; padding: 0.55rem 0.8rem; border-radius: 0.7rem; color: var(--theme-text-secondary); background: var(--theme-surface); border-color: var(--theme-border); }
+
+@media (max-width: 639px) {
+  .brand-main { padding: 1.1rem 1rem 2rem; }
+  .brand-footer { padding: 1.5rem 1rem; }
+  .brand-header__inner { min-height: 4rem; padding-block: 0.6rem; }
+  .brand-mobile-panel { border-radius: 0 0 1.25rem 1.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* ==========================================================================
+   Global Light Mode Adaptive Surface, Typography & Border Mapping
+   Transforms the Obsidian Darkroom palette into an Editorial Alabaster Gallery
+   ========================================================================== */
+
+html[data-theme="light"] .bg-\[\#0A0A0A\],
+html[data-theme="light"] .bg-\[\#080808\] {
+  background-color: #F8F7F4 !important;
+}
+
+html[data-theme="light"] .bg-\[\#0A0A0A\]\/95 {
+  background-color: rgba(248, 247, 244, 0.94) !important;
+}
+
+html[data-theme="light"] .bg-\[\#0c0c0c\],
+html[data-theme="light"] .bg-\[\#101010\],
+html[data-theme="light"] .bg-\[\#141414\],
+html[data-theme="light"] .bg-\[\#1A1A1A\] {
+  background-color: #F2F0EB !important;
+}
+
+html[data-theme="light"] .bg-\[\#111111\],
+html[data-theme="light"] .bg-\[\#121212\] {
+  background-color: #FFFFFF !important;
+}
+
+html[data-theme="light"] .bg-\[\#121212\]\/95 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+html[data-theme="light"] .bg-\[\#181818\],
+html[data-theme="light"] .hover\:bg-\[\#181818\]:hover,
+html[data-theme="light"] .hover\:bg-\[\#121212\]:hover {
+  background-color: #F1EFEA !important;
+}
+
+html[data-theme="light"] .bg-\[\#1C1C1C\],
+html[data-theme="light"] .bg-\[\#202020\],
+html[data-theme="light"] .bg-\[\#222222\],
+html[data-theme="light"] .bg-\[\#242424\],
+html[data-theme="light"] .bg-\[\#27272A\],
+html[data-theme="light"] .hover\:bg-\[\#242424\]:hover,
+html[data-theme="light"] .hover\:bg-\[\#222222\]:hover {
+  background-color: #E6E3DC !important;
+}
+
+/* Borders in Light Mode */
+html[data-theme="light"] .border-\[\#1C1C1C\],
+html[data-theme="light"] .border-\[\#1e1e1e\],
+html[data-theme="light"] .border-\[\#242424\],
+html[data-theme="light"] .border-\[\#262626\],
+html[data-theme="light"] .border-\[\#27272A\],
+html[data-theme="light"] .border-\[\#292929\],
+html[data-theme="light"] .border-\[\#333333\] {
+  border-color: #E2DFD7 !important;
+}
+
+html[data-theme="light"] .hover\:border-\[\#333333\]:hover,
+html[data-theme="light"] .hover\:border-\[\#383838\]:hover,
+html[data-theme="light"] .hover\:border-\[\#3f3f46\]:hover,
+html[data-theme="light"] .hover\:border-\[\#3F3F46\]:hover {
+  border-color: #C7C2B6 !important;
+}
+
+/* Typography in Light Mode */
+html[data-theme="light"] .text-white,
+html[data-theme="light"] .text-\[\#E5E5E5\],
+html[data-theme="light"] .hover\:text-white:hover,
+html[data-theme="light"] .group:hover .group-hover\:text-white {
+  color: #141413 !important;
+}
+
+/* Keep white icons/text on dark translucent photo overlays */
+html[data-theme="light"] .bg-black\/60.text-white,
+html[data-theme="light"] .bg-black\/70.text-white,
+html[data-theme="light"] .bg-black\/80.text-white,
+html[data-theme="light"] .bg-black\/60 .text-white,
+html[data-theme="light"] .bg-black\/70 .text-white,
+html[data-theme="light"] .bg-black\/60.text-white\/80 {
+  color: #FFFFFF !important;
+}
+
+html[data-theme="light"] .text-\[\#A1A1AA\],
+html[data-theme="light"] .text-\[\#8C8C8C\] {
+  color: #575653 !important;
+}
+
+html[data-theme="light"] .text-\[\#71717A\] {
+  color: #787672 !important;
+}
+
+/* Invert active white pill in light mode so it stands out against white cards */
+html[data-theme="light"] .bg-white.text-black {
+  background-color: #141413 !important;
+  color: #FFFFFF !important;
+}
+
+/* Status badge adjustments for Light Mode readability */
+html[data-theme="light"] .text-zinc-400 {
+  color: #52525B !important;
+}
+html[data-theme="light"] .bg-zinc-800\/40 {
+  background-color: rgba(228, 228, 231, 0.6) !important;
+}
+html[data-theme="light"] .border-zinc-700 {
+  border-color: #D4D4D8 !important;
+}
+html[data-theme="light"] .text-emerald-400 {
+  color: #047857 !important;
+}
+html[data-theme="light"] .text-sky-400 {
+  color: #0369A1 !important;
+}
+html[data-theme="light"] .text-purple-400 {
+  color: #6D28D9 !important;
+}
+
+/* Custom smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--theme-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--theme-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-gold);
+}
+
+/* Legacy utility bridge: keeps every existing view aligned with the brand tokens. */
+html[data-theme] .bg-\[\#0A0A0A\],
+html[data-theme] .bg-\[\#080808\] { background-color: var(--theme-bg-alt) !important; }
+html[data-theme] .bg-\[\#111111\],
+html[data-theme] .bg-\[\#121212\],
+html[data-theme] .bg-\[\#141414\] { background-color: var(--theme-surface) !important; }
+html[data-theme] .bg-\[\#151515\],
+html[data-theme] .bg-\[\#181818\],
+html[data-theme] .bg-\[\#1A1A1A\],
+html[data-theme] .bg-\[\#202020\] { background-color: var(--theme-surface-elevated) !important; }
+html[data-theme] .bg-\[\#222222\],
+html[data-theme] .bg-\[\#242424\],
+html[data-theme] .bg-\[\#27272A\] { background-color: var(--theme-surface-muted) !important; }
+html[data-theme] .bg-\[\#0A0A0A\]\/95 { background-color: color-mix(in srgb, var(--theme-bg) 95%, transparent) !important; }
+html[data-theme] .bg-\[\#121212\]\/95 { background-color: color-mix(in srgb, var(--theme-surface) 95%, transparent) !important; }
+html[data-theme] .hover\:bg-\[\#121212\]:hover,
+html[data-theme] .hover\:bg-\[\#151515\]:hover,
+html[data-theme] .hover\:bg-\[\#181818\]:hover,
+html[data-theme] .hover\:bg-\[\#202020\]:hover,
+html[data-theme] .hover\:bg-\[\#242424\]:hover { background-color: var(--theme-surface-elevated) !important; }
+
+html[data-theme] .border-\[\#1C1C1C\],
+html[data-theme] .border-\[\#1E1E22\],
+html[data-theme] .border-\[\#242424\],
+html[data-theme] .border-\[\#262626\],
+html[data-theme] .border-\[\#27272A\],
+html[data-theme] .border-\[\#292929\],
+html[data-theme] .border-\[\#333333\] { border-color: var(--theme-border) !important; }
+html[data-theme] .hover\:border-\[\#333333\]:hover,
+html[data-theme] .hover\:border-\[\#383838\]:hover,
+html[data-theme] .hover\:border-\[\#3F3F46\]:hover { border-color: color-mix(in srgb, var(--theme-gold) 50%, var(--theme-border)) !important; }
+
+html[data-theme] .text-white,
+html[data-theme] .text-\[\#E5E5E5\],
+html[data-theme] .text-\[\#EDEDED\],
+html[data-theme] .hover\:text-white:hover,
+html[data-theme] .group:hover .group-hover\:text-white { color: var(--theme-text) !important; }
+html[data-theme] .text-\[\#A1A1AA\],
+html[data-theme] .text-\[\#8C8C8C\] { color: var(--theme-text-secondary) !important; }
+html[data-theme] .text-\[\#71717A\] { color: var(--theme-text-muted) !important; }
+
+html[data-theme] .text-\[\#D4AF37\] { color: var(--theme-gold) !important; }
+html[data-theme] .bg-\[\#D4AF37\] { background-color: var(--theme-gold) !important; }
+html[data-theme] .hover\:bg-\[\#C5A028\]:hover { background-color: var(--theme-gold-hover) !important; }
+html[data-theme] .border-\[\#D4AF37\] { border-color: var(--theme-gold) !important; }
+html[data-theme] .from-\[\#D4AF37\] { --tw-gradient-from: var(--theme-gold) !important; }
+html[data-theme] .to-\[\#C5A028\] { --tw-gradient-to: var(--theme-gold-hover) !important; }
+html[data-theme] .bg-\[\#D4AF37\].text-black { color: var(--theme-gold-contrast) !important; }
+
+/* Keep photo overlays optically neutral in either theme. */
+html[data-theme] .bg-black\/60.text-white,
+html[data-theme] .bg-black\/70.text-white,
+html[data-theme] .bg-black\/80.text-white,
+html[data-theme] .bg-black\/60 .text-white,
+html[data-theme] .bg-black\/70 .text-white { color: #FFFFFF !important; }

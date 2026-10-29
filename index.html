@@ -2,20 +2,29 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Evidence Makers — Photo Management & Client Proofing</title>
-    <meta name="description" content="Editorial client proofing, RAW/JPEG asset pairing, package-guided album selection, and contextual picture-chat for professional wedding and event photography." />
-    <meta property="og:title" content="Evidence Makers — Photo Management & Client Proofing" />
-    <meta property="og:description" content="Editorial client proofing, RAW/JPEG asset pairing, package-guided album selection, and contextual picture-chat for professional wedding and event photography." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Evidence Makers • Luxury Wedding Cinema & Studio Suite</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+      (function() {
+        try {
+          var mode = localStorage.getItem('em_theme_mode') || localStorage.getItem('em_studio_theme_v1') || 'dark';
+          var isDark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body class="bg-[#0A0A0A] text-white antialiased selection:bg-[#D4AF37]/30 selection:text-white min-h-screen">
+  <body class="bg-zinc-50 dark:bg-[#0b0d11] text-zinc-900 dark:text-zinc-100 min-h-screen antialiased selection:bg-amber-500/20 selection:text-amber-500 transition-colors duration-200">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
